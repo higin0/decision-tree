@@ -1,0 +1,55 @@
+add device 1: /dev/input/event11
+
+  name:     "rt5648-audio Intel MID Audio Jack"
+
+add device 2: /dev/input/event10
+
+  name:     "headset_dev"
+
+add device 3: /dev/input/event9
+
+  name:     "headset_dev"
+
+add device 4: /dev/input/event8
+
+  name:     "headset_dev"
+
+add device 5: /dev/input/event7
+
+  name:     "headset_dev"
+
+add device 6: /dev/input/event6
+
+  name:     "headset_dev"
+
+add device 7: /dev/input/event2
+
+  name:     "mid_powerbtn"
+
+add device 8: /dev/input/event1
+
+  name:     "gpio-keys"
+
+add device 9: /dev/input/event5
+
+  name:     "headset_dev"
+
+add device 10: /dev/input/event4
+
+  name:     "headset_dev"
+
+add device 11: /dev/input/event3
+
+  name:     "goodix-touchscreen"
+
+add device 12: /dev/input/event0
+
+  name:     "lid_input"
+
+[   16887.110101] /dev/input/event3: EV_KEY       BTN_TOUCH            DOWN                
+
+[   16887.110101] /dev/input/event3: EV_ABS       ABS_MT_POSITION_X    000002ae            
+
+[   16887.110101] /dev/input/event3: EV_ABS       ABS_MT_POSITION_Y    0000023d                     
+
+[   16887.205392] /dev/input/event3: EV_KEY       BTN_TOUCH            UP       

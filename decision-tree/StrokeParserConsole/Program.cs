@@ -1,17 +1,18 @@
-﻿using decision_tree;
-using System;
+﻿using System;
+using StrokeParser;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace decision_tree_console
+namespace StrokeParserConsole
 {
     class Program
     {
         static void Main(string[] args)
         {
-            //Manager cenas = new Manager("../../../decision-tree/Resources/strokes3.csv");
+            Parser cenas = new Parser("../../Resources/StrokesLog1.txt");
+
             Console.ReadLine();
         }
     }

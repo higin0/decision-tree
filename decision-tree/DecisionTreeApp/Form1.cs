@@ -150,7 +150,7 @@ namespace DecisionTreeApp
             if (checkedFeatures.Count() > 0 && checkedLabel > -1)
             {
                 //bool completed;
-                manager.TrainingSet(trainingSet, checkedFeatures, checkedLabel, 25);
+                manager.TrainingSet(trainingSet, checkedFeatures, checkedLabel, 10);
                 //tree = manager.GetTree(trainingSet, checkedFeatures, checkedLabel, out completed);
                 //label1.Text = completed ? "Tree Generated" : "Tree not generated";
             }

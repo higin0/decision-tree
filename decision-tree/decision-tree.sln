@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "decision-tree-console", "de
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DecisionTreeApp", "DecisionTreeApp\DecisionTreeApp.csproj", "{97D6F7D0-5F34-438A-B287-5B30B81BF0D1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StrokeParser", "StrokeParser\StrokeParser.csproj", "{159D7958-6BEC-4E28-A8DA-AD1AC6095092}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StrokeParserConsole", "StrokeParserConsole\StrokeParserConsole.csproj", "{02B9487F-7BF9-479C-B972-1F2A55A303E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{97D6F7D0-5F34-438A-B287-5B30B81BF0D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97D6F7D0-5F34-438A-B287-5B30B81BF0D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97D6F7D0-5F34-438A-B287-5B30B81BF0D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{159D7958-6BEC-4E28-A8DA-AD1AC6095092}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{159D7958-6BEC-4E28-A8DA-AD1AC6095092}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{159D7958-6BEC-4E28-A8DA-AD1AC6095092}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{159D7958-6BEC-4E28-A8DA-AD1AC6095092}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02B9487F-7BF9-479C-B972-1F2A55A303E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02B9487F-7BF9-479C-B972-1F2A55A303E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02B9487F-7BF9-479C-B972-1F2A55A303E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02B9487F-7BF9-479C-B972-1F2A55A303E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

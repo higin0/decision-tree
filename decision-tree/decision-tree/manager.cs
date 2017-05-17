@@ -99,7 +99,7 @@ namespace decision_tree
                 var test = calculate(tree, testingSet, featureIndexes, labelIndex, out error);
                 errors.Add(error);
             }
-            int a = 2;
+            //int a = 2;
         }
 
         public DecisionTree GetTree(string[][] dataSet, int[] featureIndexes, int labelIndex)
