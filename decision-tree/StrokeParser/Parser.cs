@@ -14,8 +14,8 @@ namespace StrokeParser
     {
         public Parser(string filePath)
         {
-            string[][] data = ReadStrokes(filePath);
-            Stroke[] strokes = SeparateStrokes(data);
+            string[][] data = ReadStrokeFile(filePath);
+            List<Stroke> strokes = GetStrokes(data);
             numOfStrk(strokes,1 ,true);
             foreach (Stroke stroke in strokes)
             {
@@ -23,7 +23,7 @@ namespace StrokeParser
             }
         }
 
-        public string[][] ReadStrokes(string filePath)
+        public string[][] ReadStrokeFile(string filePath)
         {
             var file = File.ReadAllText(filePath);
             var dataSet = file.Split(new[] { "\r\r\n" }, StringSplitOptions.RemoveEmptyEntries);
@@ -42,44 +42,39 @@ namespace StrokeParser
             return clean.ToArray();
         }
 
-        public Stroke[] SeparateStrokes(string[][] strokeData)
+        public List<Stroke> GetStrokes(string[][] strokeData)
         {
             List<Stroke> strokes = new List<Stroke>();
             List<Point> points = new List<Point>();
 
             for (int i = 0; i < strokeData.GetLength(0); i++)
             {
-                List<String[]> pointInfo = new List<string[]>();
+                points.Clear();
                 if (strokeData[i][4] == "DOWN")
                 {
                     i++;
                     while (strokeData[i][4] != "UP")
                     {
-                        for (int j = 0; j < 7; j++)
-                        {
-                            pointInfo.Add(strokeData[i + j]);
-                        }
-                        points.Add(new Point(pointInfo.ToArray()));
-                        pointInfo.Clear();
+                        Point point = new Point(strokeData[i][0], strokeData[i][4], strokeData[i + 1][4], strokeData[i + 2][4], strokeData[i + 3][4]);
+                        points.Add(point);
                         i += 7;
                     }
                     if (strokeData[i][4] == "UP")
                     {
-                        i++;
+                        i +=1;
                     }
+                    Stroke s = new Stroke(points);
+                    strokes.Add(s);
                 }
-
-                strokes.Add(new Stroke(points.ToArray()));
-                points.Clear();
             }
-            return strokes.ToArray();
+            return strokes;
         }
 
         #region aux
 
         private List<double> getXpos(Stroke stroke)
         {
-            return getXpos(stroke, 0, stroke.Points.Length());
+            return getXpos(stroke, 0, stroke.Points.Count());
         }
 
         private List<double> getXpos(Stroke stroke, decimal start, decimal range)
@@ -88,7 +83,7 @@ namespace StrokeParser
 
             for (int i = (int) start; i < range; i++)
             {
-                xPos.Add(Convert.ToInt32(stroke.Points[i].PointInfo[0][4], 16));
+                xPos.Add(stroke.Points[i].XPos);
             }
             return xPos;
         }
@@ -97,9 +92,9 @@ namespace StrokeParser
         {
             List<double> yPos = new List<double>();
 
-            for (int i = 0; i < stroke.Points.Length(); i++)
+            for (int i = 0; i < stroke.Points.Count(); i++)
             {
-                yPos.Add(Convert.ToInt32(stroke.Points[i].PointInfo[1][4], 16));
+                yPos.Add(stroke.Points[i].YPos);
             }
             return yPos;
         }
@@ -110,7 +105,7 @@ namespace StrokeParser
 
             for (int i = (int) start; i < range; i++)
             {
-                yPos.Add(Convert.ToInt32(stroke.Points[i].PointInfo[1][4], 16));
+                yPos.Add(stroke.Points[i].YPos);
             }
             return yPos;
         }
@@ -119,9 +114,9 @@ namespace StrokeParser
         {
             List<double> pressures = new List<double>();
 
-            for (int i = 0; i < stroke.Points.Length(); i++)
+            for (int i = 0; i < stroke.Points.Count(); i++)
             {
-                pressures.Add(Convert.ToInt32(stroke.Points[i].PointInfo[2][4], 16));
+                pressures.Add(stroke.Points[i].Pressure);
             }
             return pressures;
         }
@@ -130,9 +125,9 @@ namespace StrokeParser
         {
             List<double> timeStamps = new List<double>();
 
-            for (int i = 0; i < stroke.Points.Length(); i++)
+            for (int i = 0; i < stroke.Points.Count(); i++)
             {
-                timeStamps.Add(double.Parse(stroke.Points[i].PointInfo[0][0], CultureInfo.InvariantCulture.NumberFormat));
+                timeStamps.Add(stroke.Points[i].TimeStamp);
             }
             return timeStamps;
         }
@@ -143,7 +138,7 @@ namespace StrokeParser
 
             for (int i = (int) start; i < range; i++)
             {
-                timeStamps.Add(double.Parse(stroke.Points[i].PointInfo[0][0], CultureInfo.InvariantCulture.NumberFormat));
+                timeStamps.Add(stroke.Points[i].TimeStamp);
             }
             return timeStamps;
         }
@@ -154,9 +149,9 @@ namespace StrokeParser
         //F1 - Duration = Duration of the stroke
         public double duration(Stroke stroke)
         {
-            int numberOfPoints = stroke.Points.Length();
-            double lastInstant = Math.Round(double.Parse(stroke.Points[numberOfPoints - 1].PointInfo[0][0], CultureInfo.InvariantCulture.NumberFormat), 6);
-            double firstInstant = Math.Round(double.Parse(stroke.Points[0].PointInfo[0][0], CultureInfo.InvariantCulture.NumberFormat), 6);
+            int numberOfPoints = stroke.Points.Count();
+            double lastInstant = stroke.Points[numberOfPoints - 1].TimeStamp;
+            double firstInstant = stroke.Points[0].TimeStamp;
             double duration = lastInstant - firstInstant;
             return duration;
         }
@@ -164,8 +159,8 @@ namespace StrokeParser
         //F2 - Dist2Prev - subtracting the initial timestamp of the current stroke, from the initial timestamp of the previous stroke.
         public double dist2prev(Stroke previous, Stroke current)
         {
-            double currentStrokeTime = Math.Round(double.Parse(current.Points[0].PointInfo[0][0], CultureInfo.InvariantCulture.NumberFormat), 6);
-            double previousStrokeTime = Math.Round(double.Parse(previous.Points[0].PointInfo[0][0], CultureInfo.InvariantCulture.NumberFormat), 6);
+            double currentStrokeTime = current.Points[0].TimeStamp;
+            double previousStrokeTime = previous.Points[0].TimeStamp;
             double duration = currentStrokeTime - previousStrokeTime;
             return duration;
         }
@@ -173,7 +168,7 @@ namespace StrokeParser
         //F3 - dist2start - time elapsed from starting
         public double dist2start(Stroke stroke, double initTime)
         {
-            double currentStrokeTime = Math.Round(double.Parse(stroke.Points[0].PointInfo[0][0], CultureInfo.InvariantCulture.NumberFormat), 6);
+            double currentStrokeTime = stroke.Points[0].TimeStamp;
             double duration = currentStrokeTime - initTime;
             return duration;
         }
@@ -471,9 +466,9 @@ namespace StrokeParser
             List<double> dy = new List<double>();
             List<double> angVel = new List<double>();
 
-            durations = getTimestamps(stroke, 0, Math.Floor((decimal)(stroke.Points.Length() / 2)));
-            xPos = getXpos(stroke, 0, Math.Floor((decimal)(stroke.Points.Length() / 2)));
-            yPos = getYpos(stroke, 0, Math.Floor((decimal)(stroke.Points.Length() / 2)));
+            durations = getTimestamps(stroke, 0, Math.Floor((decimal)(stroke.Points.Count() / 2)));
+            xPos = getXpos(stroke, 0, Math.Floor((decimal)(stroke.Points.Count() / 2)));
+            yPos = getYpos(stroke, 0, Math.Floor((decimal)(stroke.Points.Count() / 2)));
 
             for (int i = 1; i < xPos.Count(); i++)
             {
@@ -502,9 +497,9 @@ namespace StrokeParser
 
             dx.Add(0f);
             dy.Add(0f);
-            durations = getTimestamps(stroke, Math.Floor((decimal)(stroke.Points.Length() / 2)), stroke.Points.Length());
-            xPos = getXpos(stroke, Math.Floor((decimal)(stroke.Points.Length() / 2)), stroke.Points.Length());
-            yPos = getYpos(stroke, Math.Floor((decimal)(stroke.Points.Length() / 2)), stroke.Points.Length());
+            durations = getTimestamps(stroke, Math.Floor((decimal)(stroke.Points.Count() / 2)), stroke.Points.Count());
+            xPos = getXpos(stroke, Math.Floor((decimal)(stroke.Points.Count() / 2)), stroke.Points.Count());
+            yPos = getYpos(stroke, Math.Floor((decimal)(stroke.Points.Count() / 2)), stroke.Points.Count());
 
             for (int i = 1; i < xPos.Count(); i++)
             {
@@ -611,10 +606,10 @@ namespace StrokeParser
         /// <param name="interval"></param> The time period in which the counting is calculated (1, 3, 5 and 10).
         /// <param name="inclusivity"></param> Tells if the algorithm only counts full strokes within the time period. 
         /// <returns></returns>
-        public List<double> numOfStrk(Stroke[] strokeList, int interval, bool inclusivity)
+        public List<double> numOfStrk(List<Stroke> strokeList, int interval, bool inclusivity)
         {
             double elapsedTime = 0, firstInstant = 0;
-            firstInstant = Math.Round(double.Parse(strokeList[0].Points[0].PointInfo[0][0], CultureInfo.InvariantCulture.NumberFormat), 6);
+            firstInstant = strokeList[0].Points[0].TimeStamp;
             HashSet<Stroke> strokes = new HashSet<Stroke>();
             List<double> strokeCounts = new List<double>();
             for (int i = 0; i < strokeList.Count(); i++)
@@ -624,7 +619,7 @@ namespace StrokeParser
                 List<Point> points = new List<Point>();
                 for (int j = 0; j < strokeList[i].Points.Count(); j++)
                 {
-                    double currentTime = Math.Round(double.Parse(strokeList[i].Points[j].PointInfo[0][0], CultureInfo.InvariantCulture.NumberFormat), 6);
+                    double currentTime = strokeList[i].Points[j].TimeStamp;
                     elapsedTime = Math.Round((currentTime - firstInstant), 6);
                     if (elapsedTime < interval)
                     {
@@ -638,7 +633,7 @@ namespace StrokeParser
                             pointsInsideFrame++;
                             if(pointsInsideFrame == numOfPoints)
                             {
-                                Stroke s = new Stroke(points.ToArray());
+                                Stroke s = new Stroke(points);
                                 strokes.Add(s);
                                 points.Clear();
                             }
