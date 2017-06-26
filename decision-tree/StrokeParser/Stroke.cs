@@ -8,11 +8,11 @@ namespace StrokeParser
 {
     public class Stroke
     {
-        public Point[] _inputs { get; set; }
+        public Point[] Points { get; set; }
 
         public Stroke(Point[] inputs)
         {
-            _inputs = inputs;
+            Points = inputs;
         }
     }
 }
