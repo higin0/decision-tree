@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using Accord.Math;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-using System.Globalization;
+using System.Security.Permissions;
 
 namespace StrokeParser
 {
@@ -18,6 +16,209 @@ namespace StrokeParser
             List<Stroke> strokes = GetStrokes(data);
             numOfStrk(strokes,1 ,true);
             foreach (Stroke stroke in strokes)
+            {
+                //var cena = wj1(stroke);
+            }
+        }
+
+        public Parser(string filePath, List<int> featureNums)
+        {
+            string[][] data = ReadStrokeFile(filePath);
+            List<Stroke> strokes = GetStrokes(data);
+            string result = "";
+            double initTime = 0;
+            bool stroke1 = false, stroke3 = false, stroke5 = false, stroke10 = false;
+            initTime = strokes[0].Points[0].TimeStamp;
+            for (int i = 0; i < strokes.Count(); i++)
+            {
+                result += "Stroke " + i + "\n";
+                for (int f = 0; f < featureNums.Count(); f++)
+                {
+                    switch (f)
+                    {
+                        case 1:
+                            result += "F" + f + " - Duration\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 2:
+                            if (i > 0)
+                            {
+                                //result += "F" + f + " - Dist2Prev\t" + dist2prev(strokes[i - 1], strokes[i]) + "\n";
+                            }
+                            break;
+                        case 3:
+                            result += "F" + f + " - TimeElapsed\t" + timeElapsed(strokes[i], initTime) + "\n";
+                            break;
+                        case 4:
+                            result += "F" + f + " - xMin\t" + xMin(strokes[i]) + "\n";
+                            break;
+                        case 5:
+                            result += "F" + f + " - xMax\t" + xMax(strokes[i]) + "\n";
+                            break;
+                        case 6:
+                            result += "F" + f + " - xMean\t" + xMean(strokes[i]) + "\n";
+                            break;
+                        case 7:
+                            //result += "F" + f + " - xMedian\t" + (strokes[i]) + "\n";
+                            break;
+                        case 8:
+                            //result += "F" + f + " - xSTD\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 9:
+                            result += "F" + f + " - yMin\t" + yMin(strokes[i]) + "\n";
+                            break;
+                        case 10:
+                            result += "F" + f + " - yMax\t" + yMax(strokes[i]) + "\n";
+                            break;
+                        case 11:
+                            result += "F" + f + " - yMean\t" + yMean(strokes[i]) + "\n";
+                            break;
+                        case 12:
+                            //result += "F" + f + " - yMedian\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 13:
+                            //result += "F" + f + " - ySTD\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 14:
+                            result += "F" + f + " - pMin\t" + pMin(strokes[i]) + "\n";
+                            break;
+                        case 15:
+                            result += "F" + f + " - pMax\t" + pMax(strokes[i]) + "\n";
+                            break;
+                        case 16:
+                            result += "F" + f + " - pMean\t" + pMean(strokes[i]) + "\n";
+                            break;
+                        case 17:
+                            //result += "F" + f + " - pMedian\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 18:
+                            //result += "F" + f + " - pSTD\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 19:
+                            result += "F" + f + " - lengthT\t" + lengthT(strokes[i]) + "\n";
+                            break;
+                        case 20:
+                            //result += "F" + f + " - spanX\t" + spanX(strokes[i]) + "\n";
+                            break;
+                        case 21:
+                            //result += "F" + f + " - spanY\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 22:
+                            result += "F" + f + " - distanceX\t" + distanceX(strokes[i]) + "\n";
+                            break;
+                        case 23:
+                            result += "F" + f + " - distanceY\t" + distanceY(strokes[i]) + "\n";
+                            break;
+                        case 24:
+                            //result += "F" + f + " - displacement\t" + displacement(strokes[i]) + "\n";
+                            break;
+                        case 25:
+                            //result += "F" + f + " - 1stDVPCx\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 26:
+                            //result += "F" + f + " - 1stDVPCy\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 27:
+                            //result += "F" + f + " - 1stDVPP\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 28:
+                            //result += "F" + f + " - 2stDVPCx\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 29:
+                            //result += "F" + f + " - 2stDVPCx\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 30:
+                            //result += "F" + f + " - 2stDVPP\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 31:
+                            //result += "F" + f + " - velocity\t" + (strokes[i]) + "\n";
+                            break;
+                        case 32:
+                            //result += "F" + f + " - acceleration\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 33:
+                            //result += "F" + f + " - wj_Mean\t" + wj(strokes[i]) + "\n";
+                            break;
+                        case 34:
+                            //result += "F" + f + " - wj_Min\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 35:
+                            //result += "F" + f + " - wj_Max\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 36:
+                            //result += "F" + f + " - curlX\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 37:
+                            //result += "F" + f + " - curlY\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 38:
+                            //result += "F" + f + " - 1stDVCurlx\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 39:
+                            //result += "F" + f + " - 1stDVCurly\t" + duration(strokes[i]) + "\n";
+                            break;
+                        case 40:
+                            result += "F" + f + " - angleM\t" + angleM(strokes[i]) + "\n";
+                            break;
+                        case 41:
+                            result += "F" + f + " - angle1\t" + angle1(strokes[i]) + "\n";
+                            break;
+                        case 42:
+                            result += "F" + f + " - angle2\t" + angle2(strokes[i]) + "\n";
+                            break;
+                        case 43:
+                            stroke1 = true;
+                            break;
+                        case 44:
+                            stroke3 = true;
+                            break;
+                        case 45:
+                            stroke5 = true;
+                            break;
+                        case 46:
+                            stroke10 = true;
+                            break;
+                        case 47:
+                            //result += "F" + f + " - area\t" + (strokes[i]) + "\n";
+                            break;
+                        default:
+                            break;
+                    }
+                    Console.WriteLine("feature " + f + " done");
+                }
+                Console.WriteLine("stroke " + i + " done");
+            }
+            result += "\nSession Results\n";
+            if (stroke1)
+            {
+                stroke1 = false;
+                result += "F43 - numOfStrkW1\t" + print(numOfStrk(strokes, 1, true)) + "\n";
+            }
+            if (stroke3)
+            {
+                stroke3 = false;
+                result += "F44 - numOfStrkW3\t" + print(numOfStrk(strokes, 3, true)) + "\n";
+            }
+            if (stroke5)
+            {
+                stroke5 = false;
+                result += "F45 - numOfStrkW5\t" + print(numOfStrk(strokes, 4, true)) + "\n";
+            }
+            if (stroke10)
+            {
+                stroke10 = false;
+                result += "F46 - numOfStrkW10\t" + print(numOfStrk(strokes, 10, true)) + "\n";
+            }
+            string path = @"D:\teste\output.txt";
+            // Create a file to write to.
+            FileIOPermission f2 = new FileIOPermission(FileIOPermissionAccess.Write, path);
+            f2.AddPathList(FileIOPermissionAccess.Write | FileIOPermissionAccess.Read, path);
+            File.WriteAllText(path, result);
+            Console.WriteLine("Written");
+        }
+
+        public Parser(List<Stroke> strokeList)
+        {
+            foreach (Stroke stroke in strokeList)
             {
                 //var cena = wj1(stroke);
             }
@@ -143,6 +344,16 @@ namespace StrokeParser
             return timeStamps;
         }
 
+        private string print(List<double> counts)
+        {
+            string result = "";
+            foreach(int count in counts)
+            {
+                result += count + " ";
+            }
+            return result;
+        }
+
         #endregion
 
         #region Time - F1, F2, F3
@@ -165,8 +376,8 @@ namespace StrokeParser
             return duration;
         }
 
-        //F3 - dist2start - time elapsed from starting
-        public double dist2start(Stroke stroke, double initTime)
+        //F3 - timeElapsed - time elapsed from starting
+        public double timeElapsed(Stroke stroke, double initTime)
         {
             double currentStrokeTime = stroke.Points[0].TimeStamp;
             double duration = currentStrokeTime - initTime;
@@ -301,7 +512,7 @@ namespace StrokeParser
         }
         #endregion
 
-        #region Posicional Changes First Derivation
+        #region Posicional Changes First Derivation - F19, F20, F21
         //F19 - averageSpeedX - first derivation of X changes
         public double averageSpeedX(Stroke stroke)
         {
@@ -652,5 +863,6 @@ namespace StrokeParser
         }
 
         #endregion
+
     }
 }

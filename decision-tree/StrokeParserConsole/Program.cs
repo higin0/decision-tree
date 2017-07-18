@@ -11,8 +11,13 @@ namespace StrokeParserConsole
     {
         static void Main(string[] args)
         {
-            Parser cenas = new Parser("../../Resources/StrokesLog1.txt");
-
+            //Parser cenas = new Parser("../../Resources/StrokesLog1.txt");
+            List<int> features = new List<int>();
+            for(int i = 1; i < 48; i++)
+            {
+                features.Add(i);
+            }
+            Parser cenas = new Parser("../../Resources/StrokesLog1.txt", features);
             Console.ReadLine();
         }
     }
