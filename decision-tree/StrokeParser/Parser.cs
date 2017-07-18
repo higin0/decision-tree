@@ -31,139 +31,145 @@ namespace StrokeParser
             initTime = strokes[0].Points[0].TimeStamp;
             for (int i = 0; i < strokes.Count(); i++)
             {
+                List<double> angVels = wj(strokes[i]);
                 result += "Stroke " + i + "\n";
                 for (int f = 0; f < featureNums.Count(); f++)
                 {
-                    switch (f)
+                    switch (featureNums[f])
                     {
                         case 1:
-                            result += "F" + f + " - Duration\t" + duration(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - Duration\t" + duration(strokes[i]) + "\n";
                             break;
                         case 2:
                             if (i > 0)
                             {
-                                //result += "F" + f + " - Dist2Prev\t" + dist2prev(strokes[i - 1], strokes[i]) + "\n";
+                                //result += "F" + featureNums[f] + " - Dist2Prev\t" + dist2prev(strokes[i - 1], strokes[i]) + "\n";
                             }
                             break;
                         case 3:
-                            result += "F" + f + " - TimeElapsed\t" + timeElapsed(strokes[i], initTime) + "\n";
+                            result += "F" + featureNums[f] + " - TimeElapsed\t" + timeElapsed(strokes[i], initTime) + "\n";
                             break;
                         case 4:
-                            result += "F" + f + " - xMin\t" + xMin(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - xMin\t" + xMin(strokes[i]) + "\n";
                             break;
                         case 5:
-                            result += "F" + f + " - xMax\t" + xMax(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - xMax\t" + xMax(strokes[i]) + "\n";
                             break;
                         case 6:
-                            result += "F" + f + " - xMean\t" + xMean(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - xMean\t" + xMean(strokes[i]) + "\n";
                             break;
                         case 7:
-                            //result += "F" + f + " - xMedian\t" + (strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - xMedian\t" + xMedian(strokes[i]) + "\n";
                             break;
                         case 8:
-                            //result += "F" + f + " - xSTD\t" + duration(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - xSTD\t" + xStd(strokes[i]) + "\n";
                             break;
                         case 9:
-                            result += "F" + f + " - yMin\t" + yMin(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - yMin\t" + yMin(strokes[i]) + "\n";
                             break;
                         case 10:
-                            result += "F" + f + " - yMax\t" + yMax(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - yMax\t" + yMax(strokes[i]) + "\n";
                             break;
                         case 11:
-                            result += "F" + f + " - yMean\t" + yMean(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - yMean\t" + yMean(strokes[i]) + "\n";
                             break;
                         case 12:
-                            //result += "F" + f + " - yMedian\t" + duration(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - yMedian\t" + yMedian(strokes[i]) + "\n";
                             break;
                         case 13:
-                            //result += "F" + f + " - ySTD\t" + duration(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - ySTD\t" + yStd(strokes[i]) + "\n";
                             break;
                         case 14:
-                            result += "F" + f + " - pMin\t" + pMin(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - pMin\t" + pMin(strokes[i]) + "\n";
                             break;
                         case 15:
-                            result += "F" + f + " - pMax\t" + pMax(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - pMax\t" + pMax(strokes[i]) + "\n";
                             break;
                         case 16:
-                            result += "F" + f + " - pMean\t" + pMean(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - pMean\t" + pMean(strokes[i]) + "\n";
                             break;
                         case 17:
-                            //result += "F" + f + " - pMedian\t" + duration(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - pMedian\t" + pMedian(strokes[i]) + "\n";
                             break;
                         case 18:
-                            //result += "F" + f + " - pSTD\t" + duration(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - pSTD\t" + pStd(strokes[i]) + "\n";
                             break;
                         case 19:
-                            result += "F" + f + " - lengthT\t" + lengthT(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - lengthT\t" + lengthT(strokes[i]) + "\n";
                             break;
                         case 20:
-                            //result += "F" + f + " - spanX\t" + spanX(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - spanX\t" + spanX(strokes[i]) + "\n";
                             break;
                         case 21:
-                            //result += "F" + f + " - spanY\t" + duration(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - spanY\t" + spanY(strokes[i]) + "\n";
                             break;
                         case 22:
-                            result += "F" + f + " - distanceX\t" + distanceX(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - distanceX\t" + distanceX(strokes[i]) + "\n";
                             break;
                         case 23:
-                            result += "F" + f + " - distanceY\t" + distanceY(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - distanceY\t" + distanceY(strokes[i]) + "\n";
                             break;
                         case 24:
-                            //result += "F" + f + " - displacement\t" + displacement(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - displacement\t" + displacement(strokes[i]) + "\n";
                             break;
                         case 25:
-                            //result += "F" + f + " - 1stDVPCx\t" + duration(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - 1stDVPCx\t" + firstDVPCx(strokes[i]) + "\n";
                             break;
                         case 26:
-                            //result += "F" + f + " - 1stDVPCy\t" + duration(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - 1stDVPCy\t" + firstDVPCy(strokes[i]) + "\n";
                             break;
                         case 27:
-                            //result += "F" + f + " - 1stDVPP\t" + duration(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - 1stDVPP\t unimplemented \n";
+                            //result += "F" + featureNums[f] + " - 1stDVPP\t" + duration(strokes[i]) + "\n";
                             break;
                         case 28:
-                            //result += "F" + f + " - 2stDVPCx\t" + duration(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - 2stDVPCx\t" + secondDVPCx(strokes[i]) + "\n";
                             break;
                         case 29:
-                            //result += "F" + f + " - 2stDVPCx\t" + duration(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - 2stDVPCx\t" + secondDVPCy(strokes[i]) + "\n";
                             break;
                         case 30:
-                            //result += "F" + f + " - 2stDVPP\t" + duration(strokes[i]) + "\n";
+                            //result += "F" + featureNums[f] + " - 2stDVPP\t" + duration(strokes[i]) + "\n";
                             break;
                         case 31:
-                            //result += "F" + f + " - velocity\t" + (strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - velocity\t" + velocity(strokes[i]) + "\n";
                             break;
                         case 32:
-                            //result += "F" + f + " - acceleration\t" + duration(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - acceleration\t" + acceleration(strokes[i]) + "\n";
                             break;
                         case 33:
-                            //result += "F" + f + " - wj_Mean\t" + wj(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - wj_Mean\t" + wj_Mean(angVels) + "\n";
                             break;
                         case 34:
-                            //result += "F" + f + " - wj_Min\t" + duration(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - wj_Min\t" + wj_Min(angVels) + "\n";
                             break;
                         case 35:
-                            //result += "F" + f + " - wj_Max\t" + duration(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - wj_Max\t" + wj_Max(angVels) + "\n";
                             break;
                         case 36:
-                            //result += "F" + f + " - curlX\t" + duration(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - CurlX\t unimplemented \n";
+                            //result += "F" + featureNums[f] + " - curlX\t" + curlX(strokes[i]) + "\n";
                             break;
                         case 37:
-                            //result += "F" + f + " - curlY\t" + duration(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - CurlY\t unimplemented \n";
+                            //result += "F" + featureNums[f] + " - curlY\t" + curlY(strokes[i]) + "\n";
                             break;
                         case 38:
-                            //result += "F" + f + " - 1stDVCurlx\t" + duration(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - 1stDVCurlx\t unimplemented \n";
+                            //result += "F" + featureNums[f] + " - 1stDVCurlx\t" + firstDVCurlx(strokes[i]) + "\n";
                             break;
                         case 39:
-                            //result += "F" + f + " - 1stDVCurly\t" + duration(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - 1stDVCurly\t unimplemented \n";
+                            //result += "F" + featureNums[f] + " - 1stDVCurly\t" + firstDVCurly(strokes[i]) + "\n";
                             break;
                         case 40:
-                            result += "F" + f + " - angleM\t" + angleM(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - angleM\t" + angleM(strokes[i]) + "\n";
                             break;
                         case 41:
-                            result += "F" + f + " - angle1\t" + angle1(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - angle1\t" + angle1(strokes[i]) + "\n";
                             break;
                         case 42:
-                            result += "F" + f + " - angle2\t" + angle2(strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - angle2\t" + angle2(strokes[i]) + "\n";
                             break;
                         case 43:
                             stroke1 = true;
@@ -178,12 +184,12 @@ namespace StrokeParser
                             stroke10 = true;
                             break;
                         case 47:
-                            //result += "F" + f + " - area\t" + (strokes[i]) + "\n";
+                            result += "F" + featureNums[f] + " - area\t" + area(strokes[i]) + "\n";
                             break;
                         default:
                             break;
                     }
-                    Console.WriteLine("feature " + f + " done");
+                    Console.WriteLine("feature " + featureNums[f] + " done");
                 }
                 Console.WriteLine("stroke " + i + " done");
             }
@@ -354,6 +360,26 @@ namespace StrokeParser
             return result;
         }
 
+        public double Variance(List<double> values)
+        {
+            double variance = 0;
+
+            for (int i = 0; i < values.Count; i++)
+            {
+                variance += Math.Pow((values[i] - values.Average()), 2);
+            }
+
+            return variance / values.Count;
+        }
+
+        public double StandardDeviation(List<double> values)
+        {
+            double average = values.Average();
+            double variance = Variance(values);
+
+            return values.Count == 0 ? 0 : Math.Sqrt(variance);
+        }
+
         #endregion
 
         #region Time - F1, F2, F3
@@ -386,7 +412,7 @@ namespace StrokeParser
 
         #endregion
 
-        #region Location - F4, F5, F6, F7, F8, F9
+        #region Location - F4, F5, F6, F7, F8, F9, F10, F11, F12, F13
         //F4 - xMin - Min recorded X
         public double xMin(Stroke stroke)
         {
@@ -405,47 +431,111 @@ namespace StrokeParser
             return getXpos(stroke).Average();
         }
 
-        //F7 - yMin - Min recorded Y
+        //F7 - xMedian - the middle value of x coords (the average of the two middle ones in case of a even lenght)
+        public double xMedian(Stroke stroke)
+        {
+            List<double> x = getXpos(stroke);
+            x.Sort();
+            int midPoint = x.Count()/2;
+
+            if (x.Count % 2 == 0)
+            {
+                return (x[midPoint] + x[midPoint-1])/ 2;
+            }
+            else
+                return x[midPoint];
+        }
+
+        //F8 - xStd - the standard deviation of x Coordinates 
+        public double xStd(Stroke stroke)
+        {
+            return StandardDeviation(getXpos(stroke));
+        }
+
+        //F9 - yMin - Min recorded Y
         public double yMin(Stroke stroke)
         {
             return getYpos(stroke).Min();
         }
 
-        //F8 - yMax - Max recorded Y
+        //F10 - yMax - Max recorded Y
         public double yMax(Stroke stroke)
         {
             return getYpos(stroke).Max();
         }
 
-        //F9 - yMean - for these two features, values of min, max and mean should be calculated.
+        //F11 - yMean - for these two features, values of min, max and mean should be calculated.
         public double yMean(Stroke stroke)
         {
             return getYpos(stroke).Average();
         }
+
+        //F12 - yMedian - the middle value of y coords (the average of the two middle ones in case of a even lenght)
+        public double yMedian(Stroke stroke)
+        {
+            List<double> y = getYpos(stroke);
+            y.Sort();
+            int midPoint = y.Count() / 2;
+
+            if (y.Count % 2 == 0)
+            {
+                return (y[midPoint] + y[midPoint - 1]) / 2;
+            }
+            else
+                return y[midPoint];
+        }
+
+        //F13 - yStd - the standard deviation of y Coordinates 
+        public double yStd(Stroke stroke)
+        {
+            return StandardDeviation(getYpos(stroke));
+        }
         #endregion
 
-        #region Pressure - F10, F11, F12
-        //F10 - pMin - Min recorded Pressure
+        #region Pressure - F14, F15, F16, F17, F18
+        //F14 - pMin - Min recorded Pressure
         public double pMin(Stroke stroke)
         {
             return getPressures(stroke).Min();
         }
 
-        //F11 - pMax - Max recorded Pressure
+        //F15 - pMax - Max recorded Pressure
         public double pMax(Stroke stroke)
         {
             return getPressures(stroke).Max();
         }
 
-        //F12 - pMean
+        //F16 - pMean
         public double pMean(Stroke stroke)
         {
             return getPressures(stroke).Average();
         }
+
+        //F17 - pMedian - the middle value of pressures (the average of the two middle ones in case of a even lenght)
+        public double pMedian(Stroke stroke)
+        {
+            List<double> p = getPressures(stroke);
+            p.Sort();
+            int midPoint = p.Count() / 2;
+
+            if (p.Count % 2 == 0)
+            {
+                return (p[midPoint] + p[midPoint - 1]) / 2;
+            }
+            else
+                return p[midPoint];
+        }
+
+        //F18 - pStd - the standard deviation of pressures 
+        public double pStd(Stroke stroke)
+        {
+            return StandardDeviation(getPressures(stroke));
+        }
+
         #endregion
 
-        #region Positional Changes - F13, F14, F15, F16, F17, F18 
-        //F13 - LenghtT - sum of pythagorean propositions
+        #region Positional Changes - F19, F20, F21, F22, F23, F24 
+        //F19 - LenghtT - sum of pythagorean propositions
         public double lengthT(Stroke stroke)
         {
             List<double> xPos = new List<double>();
@@ -463,8 +553,8 @@ namespace StrokeParser
             return traveledPath;
         }
 
-        //F14 - Relocation in X - xMax-Xmin;
-        public double relocationX(Stroke stroke)
+        //F20 - Relocation in X - xMax-Xmin;
+        public double spanX(Stroke stroke)
         {
             List<double> xPos = new List<double>();
             List<double> relocations = new List<double>();
@@ -472,8 +562,8 @@ namespace StrokeParser
             return xPos.Max() - xPos.Min();
         }
 
-        //F15 - Relocation in Y - yMax-yMin;
-        public double relocationY(Stroke stroke)
+        //F21 - Relocation in Y - yMax-yMin;
+        public double spanY(Stroke stroke)
         {
             List<double> yPos = new List<double>();
             List<double> relocations = new List<double>();
@@ -481,7 +571,7 @@ namespace StrokeParser
             return yPos.Max() - yPos.Min();
         }
 
-        //F16 - DistanceX - difference of X position from start to the end
+        //F22 - DistanceX - difference of X position from start to the end
         public double distanceX(Stroke stroke)
         {
             List<double> xPos = new List<double>();
@@ -490,7 +580,7 @@ namespace StrokeParser
             return xPos.Last() - xPos.First();
         }
 
-        //F17 - DistanceY - difference of Y position from start to the end
+        //F23 - DistanceY - difference of Y position from start to the end
         public double distanceY(Stroke stroke)
         {
             List<double> yPos = new List<double>();
@@ -499,8 +589,8 @@ namespace StrokeParser
             return yPos.Last() - yPos.First();
         }
 
-        //F18- Distance - total displacement
-        public double distance(Stroke stroke)
+        //F24- Distance - total displacement
+        public double displacement(Stroke stroke)
         {
             List<double> xPos = new List<double>();
             List<double> yPos = new List<double>();
@@ -512,9 +602,9 @@ namespace StrokeParser
         }
         #endregion
 
-        #region Posicional Changes First Derivation - F19, F20, F21
-        //F19 - averageSpeedX - first derivation of X changes
-        public double averageSpeedX(Stroke stroke)
+        #region Posicional Changes First Derivation - F25, F26, F27
+        //F25 - averageSpeedX - first derivation of X changes
+        public double firstDVPCx(Stroke stroke)
         {
             List<double> xPos = new List<double>();
             List<double> durations = new List<double>();
@@ -535,8 +625,8 @@ namespace StrokeParser
             return speeds.Average();
         }
 
-        //F20 - averageSpeedY - first derivation of Y changes
-        public double averageSpeedY(Stroke stroke)
+        //F26 - averageSpeedY - first derivation of Y changes
+        public double firstDVPCy(Stroke stroke)
         {
             List<double> yPos = new List<double>();
             List<double> durations = new List<double>();
@@ -556,37 +646,11 @@ namespace StrokeParser
             }
             return speeds.Average();
         }
-
-        //F21 - averageSpeed - first derivation of the diameter of the rectangular span
-        public double averageSpeed(Stroke stroke)
-        {
-            List<double> xPos = new List<double>();
-            List<double> yPos = new List<double>();
-            List<double> durations = new List<double>();
-            List<double> speeds = new List<double>();
-            double deltaX = 0f, deltaY = 0f, deltaT = 0f;
-
-            speeds.Add(0f);
-            xPos = getXpos(stroke);
-            yPos = getYpos(stroke);
-            durations = getTimestamps(stroke);
-
-            //its safe to assume xPos.Count == yPos.Count == durations.Count
-            for (int j = 1; j < yPos.Count(); j++)
-            {
-                deltaX = xPos[j] - xPos[j - 1];
-                deltaY = yPos[j] - yPos[j - 1];
-                deltaT = durations[j] - durations[j - 1];
-                speeds.Add((double)Math.Sqrt(Math.Pow(deltaX, 2) + (double)Math.Pow(deltaY, 2)) / deltaT);
-            }
-            return speeds.Average();
-        }
-
         #endregion
 
-        #region Posicional Changes Second Derivation
-        //F22 - averageAccelerationX - second derivation of X changes
-        public double averageAccelerationX(Stroke stroke)
+        #region Posicional Changes Second Derivation - F28, F29, F30
+        //F28 - averageAccelerationX - second derivation of X changes
+        public double secondDVPCx(Stroke stroke)
         {
             List<double> xPos = new List<double>();
             List<double> durations = new List<double>();
@@ -611,7 +675,8 @@ namespace StrokeParser
             return avgAccel.Average();
         }
 
-        public double averageAccelerationY(Stroke stroke)
+        //F29 - averageAccelerationy - second derivation of Y changes
+        public double secondDVPCy(Stroke stroke)
         {
             List<double> yPos = new List<double>();
             List<double> durations = new List<double>();
@@ -635,8 +700,36 @@ namespace StrokeParser
 
             return avgAccel.Average();
         }
+        #endregion
 
-        public double averageAcceleration(Stroke stroke)
+        #region Velocity and Acceleration - F31, F32
+        //F31 - velocity- average speed
+        public double velocity(Stroke stroke)
+        {
+            List<double> xPos = new List<double>();
+            List<double> yPos = new List<double>();
+            List<double> durations = new List<double>();
+            List<double> speeds = new List<double>();
+            double deltaX = 0f, deltaY = 0f, deltaT = 0f;
+
+            speeds.Add(0f);
+            xPos = getXpos(stroke);
+            yPos = getYpos(stroke);
+            durations = getTimestamps(stroke);
+
+            //its safe to assume xPos.Count == yPos.Count == durations.Count
+            for (int j = 1; j < yPos.Count(); j++)
+            {
+                deltaX = xPos[j] - xPos[j - 1];
+                deltaY = yPos[j] - yPos[j - 1];
+                deltaT = durations[j] - durations[j - 1];
+                speeds.Add((double)Math.Sqrt(Math.Pow(deltaX, 2) + (double)Math.Pow(deltaY, 2)) / deltaT);
+            }
+            return speeds.Average();
+        }
+
+        //F32 - acceleration - average acceleration
+        public double acceleration(Stroke stroke)
         {
             List<double> xPos = new List<double>();
             List<double> yPos = new List<double>();
@@ -663,12 +756,10 @@ namespace StrokeParser
 
             return avgAccel.Average();
         }
-
         #endregion
 
-        #region Angular Velocity
-        //F25 - wj1 - Angular velocity of the first part of the stroke
-        public double wj1 (Stroke stroke)
+        #region Angular Velocity - F33, F34, F35
+        public List<double> wj (Stroke stroke)
         {
             List<double> xPos = new List<double>();
             List<double> yPos = new List<double>();
@@ -677,40 +768,9 @@ namespace StrokeParser
             List<double> dy = new List<double>();
             List<double> angVel = new List<double>();
 
-            durations = getTimestamps(stroke, 0, Math.Floor((decimal)(stroke.Points.Count() / 2)));
-            xPos = getXpos(stroke, 0, Math.Floor((decimal)(stroke.Points.Count() / 2)));
-            yPos = getYpos(stroke, 0, Math.Floor((decimal)(stroke.Points.Count() / 2)));
-
-            for (int i = 1; i < xPos.Count(); i++)
-            {
-                dx.Add(xPos[i] - xPos[i - 1]);
-                dy.Add(yPos[i] - yPos[i - 1]);
-            }
-
-            for(int j = 1; j < dx.Count(); j++)
-            {
-                var cena = (Math.Sqrt(dx[j] * dx[j] + dy[j] * dy[j]) * Math.Sqrt(dx[j - 1] * dx[j - 1] + dy[j - 1] * dy[j - 1]));
-                var wj = ((dx[j]*dx[j-1] + dy[j]*dy[j-1])/cena);
-                angVel.Add((double) Math.Acos(wj)/(durations[j] - durations[j-1]));
-            }
-            return angVel.Average();
-        }
-        //F26 - wj2 - Angular velocity of the second part of the stroke
-        public double wj2(Stroke stroke)
-        {
-            List<double> xPos = new List<double>();
-            List<double> yPos = new List<double>();
-            List<double> durations = new List<double>();
-            List<double> dx = new List<double>();
-            List<double> dy = new List<double>();
-            List<double> angVel = new List<double>();
-            double wj = 0f;
-
-            dx.Add(0f);
-            dy.Add(0f);
-            durations = getTimestamps(stroke, Math.Floor((decimal)(stroke.Points.Count() / 2)), stroke.Points.Count());
-            xPos = getXpos(stroke, Math.Floor((decimal)(stroke.Points.Count() / 2)), stroke.Points.Count());
-            yPos = getYpos(stroke, Math.Floor((decimal)(stroke.Points.Count() / 2)), stroke.Points.Count());
+            durations = getTimestamps(stroke);
+            xPos = getXpos(stroke);
+            yPos = getYpos(stroke);
 
             for (int i = 1; i < xPos.Count(); i++)
             {
@@ -720,15 +780,39 @@ namespace StrokeParser
 
             for (int j = 1; j < dx.Count(); j++)
             {
-                wj = (dx[j] * dx[j - 1] + dy[j] * dy[j - 1]) / ((double)Math.Sqrt(dx[j] * dx[j] + dy[j] * dy[j]) * (double)Math.Sqrt(dx[j - 1] * dx[j - 1] + dy[j - 1] * dy[j - 1]));
+                var cena = (Math.Sqrt(dx[j] * dx[j] + dy[j] * dy[j]) * Math.Sqrt(dx[j - 1] * dx[j - 1] + dy[j - 1] * dy[j - 1]));
+                var wj = ((dx[j] * dx[j - 1] + dy[j] * dy[j - 1]) / cena);
                 angVel.Add((double)Math.Acos(wj) / (durations[j] - durations[j - 1]));
             }
+            return angVel;
+        }
+
+        //F33 - wj_mean - Mean angular velocity
+        public double wj_Mean (List<Double> angVel)
+        {
             return angVel.Average();
         }
 
+        //F34 - wj_Min - Minimum Angular velocity
+        public double wj_Min(List<Double> angVel)
+        {
+            return angVel.Min();
+        }
+
+        //F34 - wj_Max - Maximum Angular velocity
+        public double wj_Max(List<Double> angVel)
+        {
+            return angVel.Min();
+        }
         #endregion
 
-        #region Angle
+        #region Curl - F36, F37 - Unimplemented
+        #endregion
+
+        #region First Derivation of Curl - F38, F39 - Unimplemented
+        #endregion
+
+        #region Angle - F40, F41, F42
         //F40 - angleM the angle of the middle point of the stroke
         public double angleM(Stroke stroke)
         {
@@ -744,15 +828,20 @@ namespace StrokeParser
             midIndex = (int)(xPos.Count() / 2);
             firstQuarterPos = (int)(xPos.Count() / 4);
             lastQuarterPos = (int)(xPos.Count() * (3/4));
+
             deltaX1 = Math.Abs(xPos[firstQuarterPos] - xPos[midIndex]);
             deltaY1 = Math.Abs(yPos[firstQuarterPos] - yPos[midIndex]);
-            deltaX2 = Math.Abs(xPos[midIndex] - xPos[lastQuarterPos]);
-            deltaY2 = Math.Abs(yPos[midIndex] - yPos[lastQuarterPos]);
-            //in radians
-            angle = (double)Math.Acos((deltaX1 * deltaX2 + deltaY1 * deltaY2) / (Math.Sqrt(deltaX1 * deltaX1 + deltaY1 * deltaY1) + Math.Sqrt(deltaX2 * deltaX2 + deltaY2 * deltaY2)));
+            deltaX2 = Math.Abs(xPos[lastQuarterPos] - xPos[midIndex]);
+            deltaY2 = Math.Abs(yPos[lastQuarterPos] - yPos[midIndex]);
 
-            //in degrees
-            angle = (double) (angle * 180 / Math.PI);
+            angle = ((Math.Atan2(deltaY1, deltaX1) - Math.Atan2(deltaY2, deltaX2)) * 180) / Math.PI;
+
+            //var a = deltaX1 * deltaX2 + deltaY1 * deltaY2;
+            //var b = Math.Sqrt(deltaX1 * deltaX1 + deltaY1 * deltaY1);
+            //var c = Math.Sqrt(deltaX2 * deltaX2 + deltaY2 * deltaY2);
+            //var d = a / (b + c);
+            //angle = Math.Acos(d);
+
             return angle;
         }
 
@@ -774,11 +863,8 @@ namespace StrokeParser
             deltaY1 = Math.Abs(yPos[0] - yPos[firstQuarterPos]);
             deltaX2 = Math.Abs(xPos[firstQuarterPos] - xPos[midPos]);
             deltaY2 = Math.Abs(yPos[firstQuarterPos] - yPos[midPos]);
-            //in radians
-            angle = (double)Math.Acos((deltaX1 * deltaX2 + deltaY1 * deltaY2) / (Math.Sqrt(deltaX1 * deltaX1 + deltaY1 * deltaY1) + Math.Sqrt(deltaX2 * deltaX2 + deltaY2 * deltaY2)));
-
             //in degrees
-            angle = (double)(angle * 180 / Math.PI);
+            angle = ((Math.Atan2(deltaY1, deltaX1) - Math.Atan2(deltaY2, deltaX2)) * 180) / Math.PI;
             return angle;
         }
 
@@ -800,16 +886,13 @@ namespace StrokeParser
             deltaY1 = Math.Abs(yPos[midPos] - yPos[lastQuarter]);
             deltaX2 = Math.Abs(xPos[lastQuarter] - xPos[xPos.Count - 1]);
             deltaY2 = Math.Abs(yPos[lastQuarter] - yPos[yPos.Count - 1]);
-            //in radians
-            angle = (double)Math.Acos((deltaX1 * deltaX2 + deltaY1 * deltaY2) / (Math.Sqrt(deltaX1 * deltaX1 + deltaY1 * deltaY1) + Math.Sqrt(deltaX2 * deltaX2 + deltaY2 * deltaY2)));
 
-            //in degrees
-            angle = (double)(angle * 180 / Math.PI);
+            angle = ((Math.Atan2(deltaY1, deltaX1) - Math.Atan2(deltaY2, deltaX2)) * 180) / Math.PI;
             return angle;
         }
         #endregion
 
-        #region # of strokes within time period
+        #region # of strokes within time period - F43, F44, F45, F46
         /// <summary>
         /// Returns a list of the number of strokes within a given time frequency (How many strokes happened in each interval of 1, 3, 5 or 10 seconds).
         /// </summary>
@@ -864,5 +947,15 @@ namespace StrokeParser
 
         #endregion
 
+        #region Area - F47
+        public double area(Stroke stroke)
+        {
+            double distX = xMax(stroke) - xMin(stroke);
+            double distY = yMax(stroke) - yMin(stroke);
+            return distX * distY;
+        }
+
+
+        #endregion
     }
 }
