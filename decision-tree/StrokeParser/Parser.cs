@@ -84,7 +84,7 @@ namespace StrokeParser
                 {
                     width = strokeData[i][4];
                 }
-                if (strokeData[i][3] == "SYN_REPORT")
+                if (strokeData[i][3] == "SYN_REPORT" && strokeData[i - 1][4] != "UP")
                 {
                     Point point = new Point(strokeData[i][0], posX, posY, touch, width);
                     points.Add(point);
@@ -92,11 +92,10 @@ namespace StrokeParser
                     posY = "";
                     touch = "";
                     width = "";
-                    i++;
                 }
-                if (strokeData[i][4] == "UP")
+                if (strokeData[i][3] == "SYN_REPORT" && strokeData[i - 1][4] == "UP")
                 {
-                    i +=1;
+                    i += 1;
                     Stroke s = new Stroke(points);
                     strokes.Add(s);
                     points.Clear();
