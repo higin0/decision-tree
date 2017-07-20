@@ -104,6 +104,12 @@ namespace StrokeParser
             return strokes;
         }
 
+        public string ConvertToCSV(string data, char oldSeparator)
+        {
+            return data.Replace(',','.').Replace(oldSeparator, ',');
+        }
+
+
         public string GetResults(List<int> featureNums)
         {
             string result = "";
@@ -112,145 +118,154 @@ namespace StrokeParser
             initTime = _strokes[0].Points[0].TimeStamp;
             for (int i = 0; i < _strokes.Count(); i++)
             {
-                result += "\nStroke " + i + "\n";
+                //result += "\nStroke " + i + "\t";
                 for (int f = 0; f < featureNums.Count(); f++)
                 {
                     switch (featureNums[f])
                     {
                         case 1:
-                            result += "F" + featureNums[f] + " - Duration\t" + duration(_strokes[i]) + "\n";
+                            result += duration(_strokes[i]) + "\t";
                             break;
                         case 2:
                             if (i > 0)
                             {
-                                result += "F" + featureNums[f] + " - Dist2Prev\t" + dist2prev(_strokes[i - 1], _strokes[i]) + "\n";
+                                result +=  dist2prev(_strokes[i - 1], _strokes[i]) + "\t";
                             }
+                            if (i == 0)
+                                result += "0\t";
                             break;
                         case 3:
-                            result += "F" + featureNums[f] + " - TimeElapsed\t" + timeElapsed(_strokes[i], initTime) + "\n";
+                            if (i > 0)
+                            {
+                                result += timeElapsed(_strokes[i], initTime) + "\t";
+                            }
+                            if (i == 0)
+                            {
+                                result += "0\t";
+                            }
                             break;
                         case 4:
-                            result += "F" + featureNums[f] + " - xMin\t" + xMin(_strokes[i]) + "\n";
+                            result += xMin(_strokes[i]) + "\t";
                             break;
                         case 5:
-                            result += "F" + featureNums[f] + " - xMax\t" + xMax(_strokes[i]) + "\n";
+                            result += xMax(_strokes[i]) + "\t";
                             break;
                         case 6:
-                            result += "F" + featureNums[f] + " - xMean\t" + xMean(_strokes[i]) + "\n";
+                            result += xMean(_strokes[i]) + "\t";
                             break;
                         case 7:
-                            result += "F" + featureNums[f] + " - xMedian\t" + xMedian(_strokes[i]) + "\n";
+                            result += xMedian(_strokes[i]) + "\t";
                             break;
                         case 8:
-                            result += "F" + featureNums[f] + " - xSTD\t" + xStd(_strokes[i]) + "\n";
+                            result += xStd(_strokes[i]) + "\t";
                             break;
                         case 9:
-                            result += "F" + featureNums[f] + " - yMin\t" + yMin(_strokes[i]) + "\n";
+                            result += yMin(_strokes[i]) + "\t";
                             break;
                         case 10:
-                            result += "F" + featureNums[f] + " - yMax\t" + yMax(_strokes[i]) + "\n";
+                            result += yMax(_strokes[i]) + "\t";
                             break;
                         case 11:
-                            result += "F" + featureNums[f] + " - yMean\t" + yMean(_strokes[i]) + "\n";
+                            result += yMean(_strokes[i]) + "\t";
                             break;
                         case 12:
-                            result += "F" + featureNums[f] + " - yMedian\t" + yMedian(_strokes[i]) + "\n";
+                            result += yMedian(_strokes[i]) + "\t";
                             break;
                         case 13:
-                            result += "F" + featureNums[f] + " - ySTD\t" + yStd(_strokes[i]) + "\n";
+                            result += yStd(_strokes[i]) + "\t";
                             break;
                         case 14:
-                            result += "F" + featureNums[f] + " - pMin\t" + pMin(_strokes[i]) + "\n";
+                            result += pMin(_strokes[i]) + "\t";
                             break;
                         case 15:
-                            result += "F" + featureNums[f] + " - pMax\t" + pMax(_strokes[i]) + "\n";
+                            result += pMax(_strokes[i]) + "\t";
                             break;
                         case 16:
-                            result += "F" + featureNums[f] + " - pMean\t" + pMean(_strokes[i]) + "\n";
+                            result += pMean(_strokes[i]) + "\t";
                             break;
                         case 17:
-                            result += "F" + featureNums[f] + " - pMedian\t" + pMedian(_strokes[i]) + "\n";
+                            result += pMedian(_strokes[i]) + "\t";
                             break;
                         case 18:
-                            result += "F" + featureNums[f] + " - pSTD\t" + pStd(_strokes[i]) + "\n";
+                            result += pStd(_strokes[i]) + "\t";
                             break;
                         case 19:
-                            result += "F" + featureNums[f] + " - lengthT\t" + lengthT(_strokes[i]) + "\n";
+                            result += lengthT(_strokes[i]) + "\t";
                             break;
                         case 20:
-                            result += "F" + featureNums[f] + " - spanX\t" + spanX(_strokes[i]) + "\n";
+                            result += spanX(_strokes[i]) + "\t";
                             break;
                         case 21:
-                            result += "F" + featureNums[f] + " - spanY\t" + spanY(_strokes[i]) + "\n";
+                            result += spanY(_strokes[i]) + "\t";
                             break;
                         case 22:
-                            result += "F" + featureNums[f] + " - distanceX\t" + distanceX(_strokes[i]) + "\n";
+                            result += distanceX(_strokes[i]) + "\t";
                             break;
                         case 23:
-                            result += "F" + featureNums[f] + " - distanceY\t" + distanceY(_strokes[i]) + "\n";
+                            result += distanceY(_strokes[i]) + "\t";
                             break;
                         case 24:
-                            result += "F" + featureNums[f] + " - displacement\t" + displacement(_strokes[i]) + "\n";
+                            result += displacement(_strokes[i]) + "\t";
                             break;
                         case 25:
-                            result += "F" + featureNums[f] + " - 1stDVPCx\t" + firstDVPCx(_strokes[i]) + "\n";
+                            result += firstDVPCx(_strokes[i]) + "\t";
                             break;
                         case 26:
-                            result += "F" + featureNums[f] + " - 1stDVPCy\t" + firstDVPCy(_strokes[i]) + "\n";
+                            result += firstDVPCy(_strokes[i]) + "\t";
                             break;
                         case 27:
-                            result += "F" + featureNums[f] + " - 1stDVPP\t unimplemented \n";
-                            //result += "F" + featureNums[f] + " - 1stDVPP\t" + firstDVPP(strokes[i]) + "\n";
+                            result += "0\t";
+                            //result += "1stDVPP\t" + firstDVPP(strokes[i]) + "\t";
                             break;
                         case 28:
-                            result += "F" + featureNums[f] + " - 2ndDVPCx\t" + secondDVPCx(_strokes[i]) + "\n";
+                            result += secondDVPCx(_strokes[i]) + "\t";
                             break;
                         case 29:
-                            result += "F" + featureNums[f] + " - 2ndDVPCx\t" + secondDVPCy(_strokes[i]) + "\n";
+                            result += secondDVPCy(_strokes[i]) + "\t";
                             break;
                         case 30:
-                            result += "F" + featureNums[f] + " - 2ndDVPP\t unimplemented \n";
-                            //result += "F" + featureNums[f] + " - 2ndDVPP\t" + secondDVPP(strokes[i]) + "\n";
+                            result += "0\t";
+                            //result += "2ndDVPP\t" + secondDVPP(strokes[i]) + "\t";
                             break;
                         case 31:
-                            result += "F" + featureNums[f] + " - velocity\t" + velocity(_strokes[i]) + "\n";
+                            result += velocity(_strokes[i]) + "\t";
                             break;
                         case 32:
-                            result += "F" + featureNums[f] + " - acceleration\t" + acceleration(_strokes[i]) + "\n";
+                            result += acceleration(_strokes[i]) + "\t";
                             break;
                         case 33:
-                            result += "F" + featureNums[f] + " - wj_Mean\t" + wj(_strokes[i], "mean") + "\n";
+                            result += wj(_strokes[i], "mean") + "\t";
                             break;
                         case 34:
-                            result += "F" + featureNums[f] + " - wj_Min\t" + wj(_strokes[i], "min") + "\n";
+                            result += wj(_strokes[i], "min") + "\t";
                             break;
                         case 35:
-                            result += "F" + featureNums[f] + " - wj_Max\t" + wj(_strokes[i], "max") + "\n";
+                            result += wj(_strokes[i], "max") + "\t";
                             break;
                         case 36:
-                            result += "F" + featureNums[f] + " - CurlX\t unimplemented \n";
-                            //result += "F" + featureNums[f] + " - curlX\t" + curlX(strokes[i]) + "\n";
+                            result += "0\t";
+                            //result += "curlX\t" + curlX(strokes[i]) + "\t";
                             break;
                         case 37:
-                            result += "F" + featureNums[f] + " - CurlY\t unimplemented \n";
-                            //result += "F" + featureNums[f] + " - curlY\t" + curlY(strokes[i]) + "\n";
+                            result += "0\t";
+                            //result += "curlY\t" + curlY(strokes[i]) + "\t";
                             break;
                         case 38:
-                            result += "F" + featureNums[f] + " - 1stDVCurlx\t unimplemented \n";
-                            //result += "F" + featureNums[f] + " - 1stDVCurlx\t" + firstDVCurlx(strokes[i]) + "\n";
+                            result += "0\t";
+                            //result += "1stDVCurlx\t" + firstDVCurlx(strokes[i]) + "\t";
                             break;
                         case 39:
-                            result += "F" + featureNums[f] + " - 1stDVCurly\t unimplemented \n";
-                            //result += "F" + featureNums[f] + " - 1stDVCurly\t" + firstDVCurly(strokes[i]) + "\n";
+                            result += "0\t";
+                            //result += "1stDVCurly\t" + firstDVCurly(strokes[i]) + "\t";
                             break;
                         case 40:
-                            result += "F" + featureNums[f] + " - angleM\t" + angleM(_strokes[i]) + "\n";
+                            result += angleM(_strokes[i]) + "\t";
                             break;
                         case 41:
-                            result += "F" + featureNums[f] + " - angle1\t" + angle1(_strokes[i]) + "\n";
+                            result += angle1(_strokes[i]) + "\t";
                             break;
                         case 42:
-                            result += "F" + featureNums[f] + " - angle2\t" + angle2(_strokes[i]) + "\n";
+                            result += angle2(_strokes[i]) + "\t";
                             break;
                         case 43:
                             stroke1 = true;
@@ -265,36 +280,37 @@ namespace StrokeParser
                             stroke10 = true;
                             break;
                         case 47:
-                            result += "F" + featureNums[f] + " - area\t" + area(_strokes[i]) + "\n";
+                            result += area(_strokes[i]);
                             break;
                         default:
                             break;
                     }
-                    Console.WriteLine("feature " + featureNums[f] + " done");
+                    //Console.WriteLine("feature " + featureNums[f] + " done");
                 }
-                Console.WriteLine("\nstroke " + i + " done\n");
+                result += "\n";
+                Console.WriteLine("stroke " + i + " done\n");
 
             }
-            result += "\nSession Results\n";
+            //result += "\nSession Results\n";
             if (stroke1)
             {
                 stroke1 = false;
-                result += "F43 - numOfStrkW1\t" + print(numOfStrk(_strokes, 1, true)) + "\n";
+                result += "numOfStrkW1\t" + print(numOfStrk(_strokes, 1, true)) + "\t";
             }
             if (stroke3)
             {
                 stroke3 = false;
-                result += "F44 - numOfStrkW3\t" + print(numOfStrk(_strokes, 3, true)) + "\n";
+                result += "numOfStrkW3\t" + print(numOfStrk(_strokes, 3, true)) + "\t";
             }
             if (stroke5)
             {
                 stroke5 = false;
-                result += "F45 - numOfStrkW5\t" + print(numOfStrk(_strokes, 4, true)) + "\n";
+                result += "numOfStrkW5\t" + print(numOfStrk(_strokes, 4, true)) + "\t";
             }
             if (stroke10)
             {
                 stroke10 = false;
-                result += "F46 - numOfStrkW10\t" + print(numOfStrk(_strokes, 10, true)) + "\n";
+                result += "numOfStrkW10\t" + print(numOfStrk(_strokes, 10, true)) + "\t";
             }
             return result;
         }
