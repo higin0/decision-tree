@@ -17,14 +17,6 @@ namespace StrokeParser
             _strokes = GetStrokes(data);
         }
 
-        public Parser(List<Stroke> strokeList)
-        {
-            foreach (Stroke stroke in strokeList)
-            {
-                //var cena = wj1(stroke);
-            }
-        }
-
         public string[][] ReadStrokeFile(string filePath)
         {
             var file = File.ReadAllText(filePath);
@@ -106,19 +98,18 @@ namespace StrokeParser
 
         public string ConvertToCSV(string data, char oldSeparator)
         {
-            return data.Replace(',','.').Replace(oldSeparator, ',');
+            return data.Replace(',','.').Replace(oldSeparator, ';').Replace('.',',');
         }
 
-
-        public string GetResults(List<int> featureNums)
+        public string GetResults(List<int> featureNums, int session)
         {
             string result = "";
+            result += "Session " + session;
             double initTime = 0;
-            bool stroke1 = false, stroke3 = false, stroke5 = false, stroke10 = false;
             initTime = _strokes[0].Points[0].TimeStamp;
             for (int i = 0; i < _strokes.Count(); i++)
             {
-                //result += "\nStroke " + i + "\t";
+                result += "\tStroke " + i + "\t";
                 for (int f = 0; f < featureNums.Count(); f++)
                 {
                     switch (featureNums[f])
@@ -214,8 +205,7 @@ namespace StrokeParser
                             result += firstDVPCy(_strokes[i]) + "\t";
                             break;
                         case 27:
-                            result += "0\t";
-                            //result += "1stDVPP\t" + firstDVPP(strokes[i]) + "\t";
+                            result += firstDVPP(_strokes[i]) + "\t";
                             break;
                         case 28:
                             result += secondDVPCx(_strokes[i]) + "\t";
@@ -224,8 +214,7 @@ namespace StrokeParser
                             result += secondDVPCy(_strokes[i]) + "\t";
                             break;
                         case 30:
-                            result += "0\t";
-                            //result += "2ndDVPP\t" + secondDVPP(strokes[i]) + "\t";
+                            result += secondDVPP(_strokes[i]) + "\t";
                             break;
                         case 31:
                             result += velocity(_strokes[i]) + "\t";
@@ -268,16 +257,16 @@ namespace StrokeParser
                             result += angle2(_strokes[i]) + "\t";
                             break;
                         case 43:
-                            stroke1 = true;
+                            result += numOfStrk(_strokes, i, 1) + "\t";
                             break;
                         case 44:
-                            stroke3 = true;
+                            result += numOfStrk(_strokes, i, 3) + "\t";
                             break;
                         case 45:
-                            stroke5 = true;
+                            result += numOfStrk(_strokes, i, 5) + "\t";
                             break;
                         case 46:
-                            stroke10 = true;
+                            result += numOfStrk(_strokes, i, 10) + "\t";
                             break;
                         case 47:
                             result += area(_strokes[i]);
@@ -288,29 +277,8 @@ namespace StrokeParser
                     //Console.WriteLine("feature " + featureNums[f] + " done");
                 }
                 result += "\n";
-                Console.WriteLine("stroke " + i + " done\n");
+                //Console.WriteLine("stroke " + i + " done\n");
 
-            }
-            //result += "\nSession Results\n";
-            if (stroke1)
-            {
-                stroke1 = false;
-                result += "numOfStrkW1\t" + print(numOfStrk(_strokes, 1, true)) + "\t";
-            }
-            if (stroke3)
-            {
-                stroke3 = false;
-                result += "numOfStrkW3\t" + print(numOfStrk(_strokes, 3, true)) + "\t";
-            }
-            if (stroke5)
-            {
-                stroke5 = false;
-                result += "numOfStrkW5\t" + print(numOfStrk(_strokes, 4, true)) + "\t";
-            }
-            if (stroke10)
-            {
-                stroke10 = false;
-                result += "numOfStrkW10\t" + print(numOfStrk(_strokes, 10, true)) + "\t";
             }
             return result;
         }
@@ -407,7 +375,7 @@ namespace StrokeParser
                 variance += Math.Pow((values[i] - values.Average()), 2);
             }
 
-            return variance / values.Count;
+            return variance / (values.Count-1);
         }
 
         public double StandardDeviation(List<double> values)
@@ -435,7 +403,7 @@ namespace StrokeParser
         public double dist2prev(Stroke previous, Stroke current)
         {
             double currentStrokeTime = current.Points[0].TimeStamp;
-            double previousStrokeTime = previous.Points[0].TimeStamp;
+            double previousStrokeTime = previous.Points[previous.Points.Count()-1].TimeStamp;
             double duration = currentStrokeTime - previousStrokeTime;
             return duration;
         }
@@ -647,7 +615,8 @@ namespace StrokeParser
             List<double> xPos = new List<double>();
             List<double> durations = new List<double>();
             List<double> speeds = new List<double>();
-            double deltaX = 0f, deltaT = 0f;
+            double deltaX = 0f, deltaT = duration(stroke);
+            double sum = 0f;
 
             speeds.Add(0f);
             durations = getTimestamps(stroke);
@@ -656,11 +625,16 @@ namespace StrokeParser
             //its safe to assume xPos.Count == durations.Count
             for (int j = 1; j < xPos.Count(); j++)
             {
-                deltaX = xPos[j] - xPos[j - 1];
-                deltaT = durations[j] - durations[j - 1];
-                speeds.Add(deltaX / deltaT);
+                deltaX = Math.Abs(xPos[j] - xPos[j - 1]);
+                speeds.Add(deltaX);
+                //deltaT = Math.Abs(durations[j] - durations[j - 1]);
+                //speeds.Add(deltaX / deltaT);
             }
-            return speeds.Average();
+            foreach (double d in speeds)
+            {
+                sum += d;
+            }
+            return sum / deltaT;
         }
 
         //F26 - averageSpeedY - first derivation of Y changes
@@ -669,20 +643,31 @@ namespace StrokeParser
             List<double> yPos = new List<double>();
             List<double> durations = new List<double>();
             List<double> speeds = new List<double>();
-            double deltaY = 0f, deltaT = 0f;
+            double deltaY = 0f, deltaT = duration(stroke);
+            double sum = 0f;
 
             speeds.Add(0f);
             durations = getTimestamps(stroke);
             yPos = getYpos(stroke);
 
-            //its safe to assume yPos.Count == durations.Count
+            //its safe to assume xPos.Count == durations.Count
             for (int j = 1; j < yPos.Count(); j++)
             {
-                deltaY = yPos[j] - yPos[j - 1];
-                deltaT = durations[j] - durations[j - 1];
-                speeds.Add(deltaY / deltaT);
+                deltaY = Math.Abs(yPos[j] - yPos[j - 1]);
+                speeds.Add(deltaY);
+                //deltaT = Math.Abs(durations[j] - durations[j - 1]);
+                //speeds.Add(deltaX / deltaT);
             }
-            return speeds.Average();
+            foreach (double d in speeds)
+            {
+                sum += d;
+            }
+            return sum / deltaT;
+        }
+
+        public double firstDVPP (Stroke stroke)
+        {
+            return velocity(stroke);
         }
         #endregion
 
@@ -694,7 +679,7 @@ namespace StrokeParser
             List<double> durations = new List<double>();
             List<double> avgSpeed = new List<double>();
             List<double> avgAccel = new List<double>();
-            double deltaX = 0f, deltaT = 0f, deltaV = 0f;
+            double deltaX = 0f, deltaT = 0.0121f, sum = 0f, ds = duration(stroke);
 
             avgSpeed.Add(0f);
             durations = getTimestamps(stroke);
@@ -703,14 +688,15 @@ namespace StrokeParser
             //its safe to assume xPos.Count == durations.Count
             for (int j = 1; j < xPos.Count(); j++)
             {
-                deltaX = xPos[j] - xPos[j - 1];
-                deltaT = durations[j] - durations[j - 1];
+                deltaX = (xPos[j] - xPos[j - 1]);
                 avgSpeed.Add(deltaX / deltaT);
-                deltaV = avgSpeed[j] - avgSpeed[j - 1];
-                avgAccel.Add(deltaV / deltaT);
+            }
+            foreach (double d in avgSpeed)
+            {
+                sum += d;
             }
 
-            return avgAccel.Average();
+            return sum / ds;
         }
 
         //F29 - averageAccelerationy - second derivation of Y changes
@@ -720,50 +706,72 @@ namespace StrokeParser
             List<double> durations = new List<double>();
             List<double> avgSpeed = new List<double>();
             List<double> avgAccel = new List<double>();
-            double deltaY = 0f, deltaT = 0f, deltaV = 0f;
+            double deltaY = 0f, deltaT = 0.0121f, sum = 0f, ds = duration(stroke);
 
             avgSpeed.Add(0f);
             durations = getTimestamps(stroke);
             yPos = getYpos(stroke);
 
-            //its safe to assume yPos.Count == durations.Count
+            //its safe to assume xPos.Count == durations.Count
             for (int j = 1; j < yPos.Count(); j++)
             {
-                deltaY = yPos[j] - yPos[j - 1];
-                deltaT = durations[j] - durations[j - 1];
+                deltaY = (yPos[j] - yPos[j - 1]);
                 avgSpeed.Add(deltaY / deltaT);
-                deltaV = avgSpeed[j] - avgSpeed[j - 1];
-                avgAccel.Add(deltaV / deltaT);
+            }
+            foreach (double d in avgSpeed)
+            {
+                sum += d;
             }
 
-            return avgAccel.Average();
+            return sum / ds;
         }
+
+        public double secondDVPP(Stroke stroke)
+        {
+            List<double> xPos = new List<double>();
+            List<double> yPos = new List<double>();
+            double durations = duration(stroke);
+            List<double> avgAccel = new List<double>();
+            List<double> vTmp = new List<double>();
+            double deltaVx = 0f, deltaVy = 0f, sum = 0f;
+
+            xPos = getXpos(stroke);
+            yPos = getYpos(stroke);
+
+            /*
+             *      speedChangeX = positionchangeX./ADBFreq;
+                    speedChangeY = positionchangeY./ADBFreq;
+                    speedChange = ((speedChangeX .^ 2) + (speedChangeY .^ 2)) .^ 0.5;
+                    avgAcc = sum(speedChange) ./ (dt);
+             * */
+
+
+            //its safe to assume xPos.Count == yPos.Count == durations.Count
+            for (int j = 1; j < yPos.Count(); j++)
+            {
+                deltaVx = Math.Abs(xPos[j] - xPos[j - 1])/0.0121;
+                deltaVy = Math.Abs(yPos[j] - yPos[j - 1])/0.0121;
+                var distTmp = (double)Math.Sqrt(Math.Pow(deltaVx, 2) + (double)Math.Pow(deltaVy, 2));
+                vTmp.Add(distTmp);
+            }
+
+            for (int v = 0; v < vTmp.Count; v++)
+            {
+                sum += vTmp[v];
+            }
+
+            var b = sum/durations;
+            return b;
+        }
+
         #endregion
 
         #region Velocity and Acceleration - F31, F32
         //F31 - velocity- average speed
         public double velocity(Stroke stroke)
         {
-            List<double> xPos = new List<double>();
-            List<double> yPos = new List<double>();
-            List<double> durations = new List<double>();
-            List<double> speeds = new List<double>();
-            double deltaX = 0f, deltaY = 0f, deltaT = 0f;
+            return lengthT(stroke) / duration(stroke);
 
-            speeds.Add(0f);
-            xPos = getXpos(stroke);
-            yPos = getYpos(stroke);
-            durations = getTimestamps(stroke);
-
-            //its safe to assume xPos.Count == yPos.Count == durations.Count
-            for (int j = 1; j < yPos.Count(); j++)
-            {
-                deltaX = xPos[j] - xPos[j - 1];
-                deltaY = yPos[j] - yPos[j - 1];
-                deltaT = durations[j] - durations[j - 1];
-                speeds.Add((double)Math.Sqrt(Math.Pow(deltaX, 2) + (double)Math.Pow(deltaY, 2)) / deltaT);
-            }
-            return speeds.Average();
         }
 
         //F32 - acceleration - average acceleration
@@ -772,26 +780,29 @@ namespace StrokeParser
             List<double> xPos = new List<double>();
             List<double> yPos = new List<double>();
             List<double> durations = new List<double>();
-            List<double> avgSpeed = new List<double>();
             List<double> avgAccel = new List<double>();
-            double deltaX = 0f, deltaY = 0f, deltaT = 0f, deltaV = 0f;
+            List<double> vTmp = new List<double>();
+            double deltaX = 0f, deltaY = 0f;
 
-            avgSpeed.Add(0f);
-            durations = getTimestamps(stroke);
             xPos = getXpos(stroke);
             yPos = getYpos(stroke);
 
             //its safe to assume xPos.Count == yPos.Count == durations.Count
             for (int j = 1; j < yPos.Count(); j++)
             {
-                deltaX = xPos[j] - xPos[j - 1];
-                deltaY = yPos[j] - yPos[j - 1];
-                deltaT = durations[j] - durations[j - 1];
-                avgSpeed.Add((double)Math.Sqrt(Math.Pow(deltaX, 2) + (double)Math.Pow(deltaY, 2)) / deltaT);
-                deltaV = avgSpeed[j] - avgSpeed[j - 1];
-                avgAccel.Add(deltaV / deltaT);
+                deltaX = Math.Abs(xPos[j] - xPos[j - 1]);
+                deltaY = Math.Abs(yPos[j] - yPos[j - 1]);
+                var distTmp = (double)Math.Sqrt(Math.Pow(deltaX, 2) + (double)Math.Pow(deltaY, 2));
+                vTmp.Add(distTmp / 0.0121);
             }
 
+            for(int v = 1; v < vTmp.Count; v++)
+            {
+                var a = vTmp[v] - vTmp[v-1];
+                avgAccel.Add(a/(2*0.0121));
+            }
+
+            var b = avgAccel.Average();
             return avgAccel.Average();
         }
         #endregion
@@ -863,24 +874,39 @@ namespace StrokeParser
 
             xPos = getXpos(stroke);
             yPos = getYpos(stroke);
-            midIndex = (int)(xPos.Count() / 2);
-            firstQuarterPos = (int)(xPos.Count() / 4);
-            lastQuarterPos = (int)(xPos.Count() * (3/4));
+            //if (xPos.Count() % 2 != 0)
+            //{
+                midIndex = (int) Math.Floor((xPos.Count()) / 2f);
+                firstQuarterPos = (int) Math.Floor((xPos.Count()) / 4f);
+                lastQuarterPos = (int) Math.Floor((xPos.Count()) * (3f / 4));
 
-            deltaX1 = Math.Abs(xPos[firstQuarterPos] - xPos[midIndex]);
-            deltaY1 = Math.Abs(yPos[firstQuarterPos] - yPos[midIndex]);
-            deltaX2 = Math.Abs(xPos[lastQuarterPos] - xPos[midIndex]);
-            deltaY2 = Math.Abs(yPos[lastQuarterPos] - yPos[midIndex]);
+                deltaX1 = xPos[0] - xPos[midIndex];
+                deltaY1 = yPos[0] - yPos[midIndex];
+                deltaX2 = xPos[xPos.Count() - 1] - xPos[midIndex];
+                deltaY2 = yPos[xPos.Count() - 1] - yPos[midIndex];
+            //}
+            /*else
+            {
+                midIndex = (int)((xPos.Count() - 1) / 2);
+                firstQuarterPos = (int)((xPos.Count() - 1) / 4);
+                lastQuarterPos = (int)Math.Floor((xPos.Count() - 1) * (3f / 4));
+                deltaX1 = ((xPos[(int) Math.Floor(midIndex + 0f)] + xPos[(int) Math.Ceiling(midIndex + 0f)]) / 2) - ((xPos[(int)Math.Floor(firstQuarterPos + 0f)] + xPos[(int)Math.Ceiling(firstQuarterPos + 0f)]) / 2);
+                deltaY1 = ((yPos[(int )Math.Floor(midIndex + 0f)] + yPos[(int) Math.Ceiling(midIndex + 0f)]) / 2) - ((yPos[(int)Math.Floor(firstQuarterPos + 0f)] + yPos[(int)Math.Ceiling(firstQuarterPos + 0f)]) / 2);
+                deltaX2 = ((xPos[(int)Math.Floor(lastQuarterPos + 0f)] + xPos[(int)Math.Ceiling(lastQuarterPos + 0f)]) / 2) - ((xPos[(int)Math.Floor(midIndex + 0f)] + xPos[(int)Math.Ceiling(midIndex + 0f)]) / 2);
+                deltaY2 = ((yPos[(int)Math.Floor(lastQuarterPos + 0f)] + yPos[(int)Math.Ceiling(lastQuarterPos + 0f)]) / 2) - ((yPos[(int)Math.Floor(midIndex + 0f)] + yPos[(int)Math.Ceiling(midIndex + 0f)]) / 2);
+            }*/
 
-            angle = ((Math.Atan2(deltaY1, deltaX1) - Math.Atan2(deltaY2, deltaX2)) * 180) / Math.PI;
-
-            //var a = deltaX1 * deltaX2 + deltaY1 * deltaY2;
-            //var b = Math.Sqrt(deltaX1 * deltaX1 + deltaY1 * deltaY1);
-            //var c = Math.Sqrt(deltaX2 * deltaX2 + deltaY2 * deltaY2);
-            //var d = a / (b + c);
-            //angle = Math.Acos(d);
-
-            return angle;
+            var dot = deltaX1 * deltaX2 + deltaY1 * deltaY2;
+            var normU = Math.Round(Math.Sqrt(deltaX1 * deltaX1 + deltaY1 * deltaY1),4);
+            var normV= Math.Round(Math.Sqrt(deltaX2 * deltaX2 + deltaY2 * deltaY2),4);
+            if (normU*normV != 0)
+            {
+                angle = Math.Acos(dot / (normU*normV));
+                angle = angle * 57.2958; //to degrees
+                return Math.Round(angle, 4);
+            }
+            else
+                return 0;
         }
 
         //F41 - angle1 the angle between mid point and starting point - in degrees
@@ -895,15 +921,27 @@ namespace StrokeParser
 
             xPos = getXpos(stroke);
             yPos = getYpos(stroke);
-            firstQuarterPos = (int)(xPos.Count() / 4);
-            midPos = (int)(xPos.Count() / 2);
-            deltaX1 = Math.Abs(xPos[0] - xPos[firstQuarterPos]);
-            deltaY1 = Math.Abs(yPos[0] - yPos[firstQuarterPos]);
-            deltaX2 = Math.Abs(xPos[firstQuarterPos] - xPos[midPos]);
-            deltaY2 = Math.Abs(yPos[firstQuarterPos] - yPos[midPos]);
-            //in degrees
-            angle = ((Math.Atan2(deltaY1, deltaX1) - Math.Atan2(deltaY2, deltaX2)) * 180) / Math.PI;
-            return angle;
+
+            midPos = (int)Math.Floor((xPos.Count()) / 2f);
+            firstQuarterPos = (int)Math.Floor((xPos.Count()) / 4f);
+
+            deltaX1 = xPos[firstQuarterPos] - xPos[0];
+            deltaY1 = yPos[firstQuarterPos] - yPos[0];
+            deltaX2 = xPos[firstQuarterPos] - xPos[midPos];
+            deltaY2 = yPos[firstQuarterPos] - yPos[midPos];
+
+            var dot = deltaX1 * deltaX2 + deltaY1 * deltaY2;
+            var normU = Math.Round(Math.Sqrt(deltaX1 * deltaX1 + deltaY1 * deltaY1), 4);
+            var normV = Math.Round(Math.Sqrt(deltaX2 * deltaX2 + deltaY2 * deltaY2), 4);
+            if (normU * normV != 0)
+            {
+                angle = Math.Acos(dot / (normU * normV));
+                angle = angle * 57.2958; //to degrees
+                return Math.Round(angle, 4);
+            }
+            else
+                return 0;
+
         }
 
         //F42 - angle2 the angle between mid point and the ending point
@@ -918,15 +956,26 @@ namespace StrokeParser
 
             xPos = getXpos(stroke);
             yPos = getYpos(stroke);
-            lastQuarter = (int)(xPos.Count() * (3/4));
-            midPos = (int)(xPos.Count() / 2);
-            deltaX1 = Math.Abs(xPos[midPos] - xPos[lastQuarter]);
-            deltaY1 = Math.Abs(yPos[midPos] - yPos[lastQuarter]);
-            deltaX2 = Math.Abs(xPos[lastQuarter] - xPos[xPos.Count - 1]);
-            deltaY2 = Math.Abs(yPos[lastQuarter] - yPos[yPos.Count - 1]);
 
-            angle = ((Math.Atan2(deltaY1, deltaX1) - Math.Atan2(deltaY2, deltaX2)) * 180) / Math.PI;
-            return angle;
+            midPos = (int)Math.Floor((xPos.Count()) / 2f);
+            lastQuarter = (int)Math.Floor((xPos.Count()) * (3f / 4));
+
+            deltaX1 = xPos[lastQuarter] - xPos[midPos];
+            deltaY1 = yPos[lastQuarter] - yPos[midPos];
+            deltaX2 = xPos[lastQuarter] - xPos[xPos.Count - 1];
+            deltaY2 = yPos[lastQuarter] - yPos[yPos.Count - 1];
+
+            var dot = deltaX1 * deltaX2 + deltaY1 * deltaY2;
+            var normU = Math.Round(Math.Sqrt(deltaX1 * deltaX1 + deltaY1 * deltaY1), 4);
+            var normV = Math.Round(Math.Sqrt(deltaX2 * deltaX2 + deltaY2 * deltaY2), 4);
+            if (normU * normV != 0)
+            {
+                angle = Math.Acos(dot / (normU * normV));
+                angle = angle * 57.2958; //to degrees
+                return Math.Round(angle, 4);
+            }
+            else
+                return 0;
         }
         #endregion
 
@@ -938,7 +987,7 @@ namespace StrokeParser
         /// <param name="interval"></param> The time period in which the counting is calculated (1, 3, 5 and 10).
         /// <param name="inclusivity"></param> Tells if the algorithm only counts full strokes within the time period. 
         /// <returns></returns>
-        public List<double> numOfStrk(List<Stroke> strokeList, int interval, bool inclusivity)
+        /*public List<double> numOfStrk(List<Stroke> strokeList, int interval, bool inclusivity)
         {
             double elapsedTime = 0, firstInstant = 0;
             firstInstant = strokeList[0].Points[0].TimeStamp;
@@ -981,6 +1030,32 @@ namespace StrokeParser
                 }
             }
             return strokeCounts;
+        }*/
+
+        public int numOfStrk(List<Stroke> strokeList, int strokeIndex, int interval)
+        {
+            Stroke currentStroke = strokeList[strokeIndex];
+            double strokeEndTime = 0f;
+            int strokeCount = 0;
+            int lastPoint = currentStroke.Points.Count() - 1;
+            strokeEndTime = currentStroke.Points[lastPoint].TimeStamp;
+
+            for(int i = strokeIndex-1; i >= 0; i--)
+            {
+                Stroke tmp = strokeList[i];
+                double currentTime = tmp.Points[0].TimeStamp;
+                var delta = strokeEndTime - currentTime;
+                if(delta <= interval)
+                {
+                    strokeCount++;
+                }
+                else
+                {
+                    return strokeCount;
+                }
+            }
+
+            return strokeCount;
         }
 
         #endregion

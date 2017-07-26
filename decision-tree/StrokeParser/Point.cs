@@ -44,10 +44,10 @@ namespace StrokeParser
         public Point(string timeStamp, string x, string y, string pressure, string width)
         {
             TimeStamp = Math.Round(double.Parse(timeStamp, CultureInfo.InvariantCulture.NumberFormat),6);
-                XPos = int.Parse(x, System.Globalization.NumberStyles.HexNumber);
-                YPos = int.Parse(y, System.Globalization.NumberStyles.HexNumber);
-                Pressure = int.Parse(pressure, System.Globalization.NumberStyles.HexNumber);
-                Width = int.Parse(width, System.Globalization.NumberStyles.HexNumber);
+            XPos = int.Parse(x, System.Globalization.NumberStyles.HexNumber);
+            YPos = int.Parse(y, System.Globalization.NumberStyles.HexNumber);
+            Pressure = int.Parse(pressure, System.Globalization.NumberStyles.HexNumber);
+            Width = int.Parse(width, System.Globalization.NumberStyles.HexNumber);
         }
     }
 }
