@@ -9,12 +9,26 @@ namespace StrokeParser
 {
     public class Parser
     {
-        public List<Stroke> _strokes = new List<Stroke>();
+        private List<Stroke> strokes = new List<Stroke>();
+        private string[][] emotionDetections;
 
-        public Parser(string filePath)
+        public Parser(string strokeFile, string emotionFile)
         {
-            string[][] data = ReadStrokeFile(filePath);
-            _strokes = GetStrokes(data);
+            string[][] strokeData = ReadStrokeFile(strokeFile);
+            string[][] emotionData = ReadEmotionFile(emotionFile);
+
+            strokes = GetStrokes(strokeData);
+            emotionDetections = ConvertTime(emotionData);
+        }
+
+
+        public string[][] ReadEmotionFile(string filePath)
+        {
+            var file = File.ReadAllText(filePath);
+            var dataSet = file.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            List<string[]> clean = new List<string[]>();
+            var parsedDataSet = dataSet.Apply(x => x.Split(';'));
+            return parsedDataSet;
         }
 
         public string[][] ReadStrokeFile(string filePath)
@@ -46,6 +60,29 @@ namespace StrokeParser
                 clean.Add(parsedDataSet[j]);
             }
             return clean.ToArray();
+        }
+
+        private string[][] ConvertTime(String[][] emotionData)
+        {
+            double initialTime = 0;
+            for(int i = 1; i < emotionData.GetLength(0); i++)
+            {
+                string time = emotionData[i][0];
+                string[] splitTime = time.Split(':');
+                double minutes = Double.Parse(splitTime[0]);
+                double seconds = Double.Parse(splitTime[1]);
+                double timeNum =  minutes * 60 + seconds;
+                if(i == 1)
+                {
+                    initialTime = timeNum;
+                }
+                emotionData[i][0] = Convert.ToString(timeNum);
+            }
+            for (int j = 1; j < emotionData.GetLength(0); j++)
+            {
+                emotionData[j][0] = Convert.ToString(Math.Round(Double.Parse(emotionData[j][0]) - initialTime, 1));
+            }
+                return emotionData;
         }
 
         public List<Stroke> GetStrokes(string[][] strokeData)
@@ -106,8 +143,8 @@ namespace StrokeParser
             string result = "";
             result += "Session " + session;
             double initTime = 0;
-            initTime = _strokes[0].Points[0].TimeStamp;
-            for (int i = 0; i < _strokes.Count(); i++)
+            initTime = strokes[0].Points[0].TimeStamp;
+            for (int i = 0; i < strokes.Count(); i++)
             {
                 result += "\tStroke " + i + "\t";
                 for (int f = 0; f < featureNums.Count(); f++)
@@ -115,12 +152,12 @@ namespace StrokeParser
                     switch (featureNums[f])
                     {
                         case 1:
-                            result += duration(_strokes[i]) + "\t";
+                            result += duration(strokes[i]) + "\t";
                             break;
                         case 2:
                             if (i > 0)
                             {
-                                result +=  dist2prev(_strokes[i - 1], _strokes[i]) + "\t";
+                                result +=  dist2prev(strokes[i - 1], strokes[i]) + "\t";
                             }
                             if (i == 0)
                                 result += "0\t";
@@ -128,7 +165,7 @@ namespace StrokeParser
                         case 3:
                             if (i > 0)
                             {
-                                result += timeElapsed(_strokes[i], initTime) + "\t";
+                                result += timeElapsed(strokes[i], initTime) + "\t";
                             }
                             if (i == 0)
                             {
@@ -136,100 +173,100 @@ namespace StrokeParser
                             }
                             break;
                         case 4:
-                            result += xMin(_strokes[i]) + "\t";
+                            result += xMin(strokes[i]) + "\t";
                             break;
                         case 5:
-                            result += xMax(_strokes[i]) + "\t";
+                            result += xMax(strokes[i]) + "\t";
                             break;
                         case 6:
-                            result += xMean(_strokes[i]) + "\t";
+                            result += xMean(strokes[i]) + "\t";
                             break;
                         case 7:
-                            result += xMedian(_strokes[i]) + "\t";
+                            result += xMedian(strokes[i]) + "\t";
                             break;
                         case 8:
-                            result += xStd(_strokes[i]) + "\t";
+                            result += xStd(strokes[i]) + "\t";
                             break;
                         case 9:
-                            result += yMin(_strokes[i]) + "\t";
+                            result += yMin(strokes[i]) + "\t";
                             break;
                         case 10:
-                            result += yMax(_strokes[i]) + "\t";
+                            result += yMax(strokes[i]) + "\t";
                             break;
                         case 11:
-                            result += yMean(_strokes[i]) + "\t";
+                            result += yMean(strokes[i]) + "\t";
                             break;
                         case 12:
-                            result += yMedian(_strokes[i]) + "\t";
+                            result += yMedian(strokes[i]) + "\t";
                             break;
                         case 13:
-                            result += yStd(_strokes[i]) + "\t";
+                            result += yStd(strokes[i]) + "\t";
                             break;
                         case 14:
-                            result += pMin(_strokes[i]) + "\t";
+                            result += pMin(strokes[i]) + "\t";
                             break;
                         case 15:
-                            result += pMax(_strokes[i]) + "\t";
+                            result += pMax(strokes[i]) + "\t";
                             break;
                         case 16:
-                            result += pMean(_strokes[i]) + "\t";
+                            result += pMean(strokes[i]) + "\t";
                             break;
                         case 17:
-                            result += pMedian(_strokes[i]) + "\t";
+                            result += pMedian(strokes[i]) + "\t";
                             break;
                         case 18:
-                            result += pStd(_strokes[i]) + "\t";
+                            result += pStd(strokes[i]) + "\t";
                             break;
                         case 19:
-                            result += lengthT(_strokes[i]) + "\t";
+                            result += lengthT(strokes[i]) + "\t";
                             break;
                         case 20:
-                            result += spanX(_strokes[i]) + "\t";
+                            result += spanX(strokes[i]) + "\t";
                             break;
                         case 21:
-                            result += spanY(_strokes[i]) + "\t";
+                            result += spanY(strokes[i]) + "\t";
                             break;
                         case 22:
-                            result += distanceX(_strokes[i]) + "\t";
+                            result += distanceX(strokes[i]) + "\t";
                             break;
                         case 23:
-                            result += distanceY(_strokes[i]) + "\t";
+                            result += distanceY(strokes[i]) + "\t";
                             break;
                         case 24:
-                            result += displacement(_strokes[i]) + "\t";
+                            result += displacement(strokes[i]) + "\t";
                             break;
                         case 25:
-                            result += firstDVPCx(_strokes[i]) + "\t";
+                            result += firstDVPCx(strokes[i]) + "\t";
                             break;
                         case 26:
-                            result += firstDVPCy(_strokes[i]) + "\t";
+                            result += firstDVPCy(strokes[i]) + "\t";
                             break;
                         case 27:
-                            result += firstDVPP(_strokes[i]) + "\t";
+                            result += firstDVPP(strokes[i]) + "\t";
                             break;
                         case 28:
-                            result += secondDVPCx(_strokes[i]) + "\t";
+                            result += secondDVPCx(strokes[i]) + "\t";
                             break;
                         case 29:
-                            result += secondDVPCy(_strokes[i]) + "\t";
+                            result += secondDVPCy(strokes[i]) + "\t";
                             break;
                         case 30:
-                            result += secondDVPP(_strokes[i]) + "\t";
+                            result += secondDVPP(strokes[i]) + "\t";
                             break;
                         case 31:
-                            result += velocity(_strokes[i]) + "\t";
+                            result += velocity(strokes[i]) + "\t";
                             break;
                         case 32:
-                            result += acceleration(_strokes[i]) + "\t";
+                            result += acceleration(strokes[i]) + "\t";
                             break;
                         case 33:
-                            result += wj(_strokes[i], "mean") + "\t";
+                            result += wj(strokes[i], "mean") + "\t";
                             break;
                         case 34:
-                            result += wj(_strokes[i], "min") + "\t";
+                            result += wj(strokes[i], "min") + "\t";
                             break;
                         case 35:
-                            result += wj(_strokes[i], "max") + "\t";
+                            result += wj(strokes[i], "max") + "\t";
                             break;
                         case 36:
                             result += "0\t";
@@ -248,34 +285,35 @@ namespace StrokeParser
                             //result += "1stDVCurly\t" + firstDVCurly(strokes[i]) + "\t";
                             break;
                         case 40:
-                            result += angleM(_strokes[i]) + "\t";
+                            result += angleM(strokes[i]) + "\t";
                             break;
                         case 41:
-                            result += angle1(_strokes[i]) + "\t";
+                            result += angle1(strokes[i]) + "\t";
                             break;
                         case 42:
-                            result += angle2(_strokes[i]) + "\t";
+                            result += angle2(strokes[i]) + "\t";
                             break;
                         case 43:
-                            result += numOfStrk(_strokes, i, 1) + "\t";
+                            result += numOfStrk(strokes, i, 1) + "\t";
                             break;
                         case 44:
-                            result += numOfStrk(_strokes, i, 3) + "\t";
+                            result += numOfStrk(strokes, i, 3) + "\t";
                             break;
                         case 45:
-                            result += numOfStrk(_strokes, i, 5) + "\t";
+                            result += numOfStrk(strokes, i, 5) + "\t";
                             break;
                         case 46:
-                            result += numOfStrk(_strokes, i, 10) + "\t";
+                            result += numOfStrk(strokes, i, 10) + "\t";
                             break;
                         case 47:
-                            result += area(_strokes[i]);
+                            result += area(strokes[i]) + "\t";
                             break;
                         default:
                             break;
                     }
                     //Console.WriteLine("feature " + featureNums[f] + " done");
                 }
+                result += getEmotion(strokes[i], strokes, emotionDetections);
                 result += "\n";
                 //Console.WriteLine("stroke " + i + " done\n");
 
@@ -1068,6 +1106,115 @@ namespace StrokeParser
             return distX * distY;
         }
 
+
+        #endregion
+
+        #region Emotion Detection
+        public string getEmotion(Stroke stroke, List<Stroke> strokeList, String[][] emotionData)
+        {
+            double sessionStrokeStartTime = strokeList[0].Points[0].TimeStamp;
+            List<string[]> strokeWindow = new List<string[]>();
+            double currentStrokeStartTime = stroke.Points[0].TimeStamp - sessionStrokeStartTime;
+            double currentStrokeEndTime = stroke.Points[stroke.Points.Count() - 1].TimeStamp - sessionStrokeStartTime;
+            for (int j = 1; j < emotionData.GetLength(0); j++)
+            {
+                double currentEmotionTime = Double.Parse(emotionData[j][0]);
+                if (currentEmotionTime <= currentStrokeEndTime && currentEmotionTime >= currentStrokeStartTime)
+                {
+                    strokeWindow.Add(emotionData[j]);
+                }
+                else if(currentEmotionTime >= currentStrokeEndTime)
+                {
+                    if(strokeWindow.Count > 0)
+                    {
+                        return FindMaxEmotion(strokeWindow);
+                    }
+                }
+                else
+                    continue;
+            }
+            return "unknown";
+        }
+
+
+        private string FindMaxEmotion(List<string[]> emotionData)
+        {
+            List<double> happy = new List<double>();
+            List<double> sad = new List<double>();
+            List<double> angry = new List<double>();
+            List<double> supr = new List<double>();
+            List<double> scared = new List<double>();
+            List<double> disgusted = new List<double>();
+            List<double> contempt = new List<double>();
+
+            foreach (string[] line in emotionData)
+            {
+                for(int i = 2; i < line.Count(); i++)
+                {
+                    switch (i)
+                    {
+                        case 2:
+                            happy.Add(Double.Parse(line[i]));
+                            break;
+                        case 3:
+                            sad.Add(Double.Parse(line[i]));
+                            break;
+                        case 4:
+                            angry.Add(Double.Parse(line[i]));
+                            break;
+                        case 5:
+                            supr.Add(Double.Parse(line[i]));
+                            break;
+                        case 6:
+                            scared.Add(Double.Parse(line[i]));
+                            break;
+                        case 7:
+                            disgusted.Add(Double.Parse(line[i]));
+                            break;
+                        case 8:
+                            contempt.Add(Double.Parse(line[i]));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            List<Double> averageList = new List<double>();
+            var averages = new double[] { happy.Average(), sad.Average(), angry.Average(), supr.Average(), scared.Average(), disgusted.Average(), contempt.Average() };
+            averageList.AddRange(averages);
+            var maxi = averages.Max();
+            var id = averages.ToList().IndexOf(maxi);
+            string emotion = "unknown";
+
+            if (id > -1)
+            {
+                switch (id)
+                {
+                    case 1:
+                        emotion = "happy";
+                        break;
+                    case 2:
+                        emotion = "sad";
+                        break;
+                    case 3:
+                        emotion = "angry";
+                        break;
+                    case 4:
+                        emotion = "surprised";
+                        break;
+                    case 5:
+                        emotion = "scared";
+                        break;
+                    case 6:
+                        emotion = "contempt";
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return emotion;
+        }
 
         #endregion
     }
