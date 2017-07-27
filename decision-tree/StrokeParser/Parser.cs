@@ -1045,7 +1045,7 @@ namespace StrokeParser
                 Stroke tmp = strokeList[i];
                 double currentTime = tmp.Points[0].TimeStamp;
                 var delta = strokeEndTime - currentTime;
-                if(delta <= interval)
+                if(delta < interval)
                 {
                     strokeCount++;
                 }

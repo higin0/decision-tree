@@ -34,23 +34,33 @@ namespace StrokeParserConsole
                 //session 5 is not uniform
                 if (folders[i] != @"C:\Users\higin\Dropbox\To Joao\05")
                 {
-                    string[] files = System.IO.Directory.GetFiles(folders[i], "*.txt");
-                    //output += "Session " + i +"\n";
-                    if (files.Count() == 1)
+                    string[] strokeFiles = System.IO.Directory.GetFiles(folders[i], "*.txt");
+                    string[] expressionFiles = System.IO.Directory.GetFiles(folders[i], "*.csv");
+
+                    if (strokeFiles.Count() == 1 && expressionFiles.Count() == 1)
                     {
-                        Parser cenas = new Parser(files[0]);
-                        output = cenas.GetResults(features, i);
-                        output = cenas.ConvertToCSV(output, '\t');
+                        Parser strokes = new Parser(strokeFiles[0]);
+                        Parser emotions = new Parser(expressionFiles[0]);
+                        output = strokes.GetResults(features, i);
+                        output = strokes.ConvertToCSV(output, '\t');
                         File.AppendAllText(outputPath, output);
                         Console.WriteLine("--------------------------------- Session " + i + " Written -----------------------------------");
                     }
-                    else if (files.Count() > 1)
+                    else if (strokeFiles.Count() > 1)
                     {
                         Console.WriteLine("Too many txt files in folder "+ i + ". Unsure which one is the data to use");
                     }
-                    else if (files.Count() < 1)
+                    else if (strokeFiles.Count() < 1)
                     {
                         Console.WriteLine("No txt files were found in Folder " + i);
+                    }
+                    if(expressionFiles.Count() > 1)
+                    {
+                        Console.WriteLine("Too many CSV files in folder " + i + ". Unsure which one is the data to use");
+                    }
+                    else if(expressionFiles.Count() < 1)
+                    {
+                        Console.WriteLine("No CSV files were found in Folder " + i);
                     }
                 }
             }
