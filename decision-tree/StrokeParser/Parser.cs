@@ -65,6 +65,7 @@ namespace StrokeParser
         private string[][] ConvertTime(String[][] emotionData)
         {
             double initialTime = 0;
+            string temp = "";
             for(int i = 1; i < emotionData.GetLength(0); i++)
             {
                 string time = emotionData[i][0];
@@ -82,6 +83,15 @@ namespace StrokeParser
             {
                 emotionData[j][0] = Convert.ToString(Math.Round(Double.Parse(emotionData[j][0]) - initialTime, 1));
             }
+            /*for (int x = 0; x < emotionData.GetLength(0); x++)
+            {
+                for (int w = 0; w < 8; w++)
+                {
+                    temp += emotionData[x][w] + "\t";
+                }
+                temp += "\n";
+            }
+            Console.WriteLine(temp);*/
                 return emotionData;
         }
 
@@ -1109,31 +1119,44 @@ namespace StrokeParser
 
         #endregion
 
-        #region Emotion Detection
+        #region Emotion Parsing
         public string getEmotion(Stroke stroke, List<Stroke> strokeList, String[][] emotionData)
         {
-            double sessionStrokeStartTime = strokeList[0].Points[0].TimeStamp;
             List<string[]> strokeWindow = new List<string[]>();
-            double currentStrokeStartTime = stroke.Points[0].TimeStamp - sessionStrokeStartTime;
-            double currentStrokeEndTime = stroke.Points[stroke.Points.Count() - 1].TimeStamp - sessionStrokeStartTime;
+            string emotion = "what";
+            double sessionStrokeStartTime = strokeList[0].Points[0].TimeStamp;
+            double currentStrokeStartTime = Math.Round(stroke.Points[0].TimeStamp - sessionStrokeStartTime, 2);
+            double currentStrokeEndTime = Math.Round(stroke.Points[stroke.Points.Count() - 1].TimeStamp - sessionStrokeStartTime, 2);
             for (int j = 1; j < emotionData.GetLength(0); j++)
             {
                 double currentEmotionTime = Double.Parse(emotionData[j][0]);
-                if (currentEmotionTime <= currentStrokeEndTime && currentEmotionTime >= currentStrokeStartTime)
+                if (currentEmotionTime >= currentStrokeStartTime)
                 {
-                    strokeWindow.Add(emotionData[j]);
-                }
-                else if(currentEmotionTime >= currentStrokeEndTime)
-                {
-                    if(strokeWindow.Count > 0)
+                    if (currentEmotionTime <= currentStrokeEndTime)
                     {
-                        return FindMaxEmotion(strokeWindow);
+                        strokeWindow.Add(emotionData[j]);
                     }
+                    if (currentEmotionTime > currentStrokeEndTime)
+                    {
+                        if (strokeWindow.Count > 0)
+                        {
+                            emotion = FindMaxEmotion(strokeWindow);
+                            strokeWindow.Clear();
+                            return emotion;
+                        }
+                        else
+                        {
+                            strokeWindow.Add(emotionData[j]);
+                            emotion = FindMaxEmotion(strokeWindow);
+                            strokeWindow.Clear();
+                            return emotion;
+                        }
+                    }
+                    else
+                        continue;
                 }
-                else
-                    continue;
             }
-            return "unknown";
+            return emotion;
         }
 
 
@@ -1145,7 +1168,6 @@ namespace StrokeParser
             List<double> supr = new List<double>();
             List<double> scared = new List<double>();
             List<double> disgusted = new List<double>();
-            List<double> contempt = new List<double>();
 
             foreach (string[] line in emotionData)
             {
@@ -1171,20 +1193,22 @@ namespace StrokeParser
                         case 7:
                             disgusted.Add(Double.Parse(line[i]));
                             break;
-                        case 8:
-                            contempt.Add(Double.Parse(line[i]));
-                            break;
                         default:
                             break;
                     }
                 }
             }
             List<Double> averageList = new List<double>();
-            var averages = new double[] { happy.Average(), sad.Average(), angry.Average(), supr.Average(), scared.Average(), disgusted.Average(), contempt.Average() };
+            var averages = new double[] { happy.Average(), sad.Average(), angry.Average(), supr.Average(), scared.Average(), disgusted.Average()};
             averageList.AddRange(averages);
             var maxi = averages.Max();
             var id = averages.ToList().IndexOf(maxi);
-            string emotion = "unknown";
+
+            string emotion = "say";
+            if (id < 0)
+            {
+                emotion = "cwaeifhaidhfapis";
+            }
 
             if (id > -1)
             {
@@ -1206,7 +1230,7 @@ namespace StrokeParser
                         emotion = "scared";
                         break;
                     case 6:
-                        emotion = "contempt";
+                        emotion = "disgusted";
                         break;
                     default:
                         break;

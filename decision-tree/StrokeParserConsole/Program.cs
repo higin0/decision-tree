@@ -14,8 +14,8 @@ namespace StrokeParserConsole
             //string inputPath = args[0];
             //string outputPath = args[1];
             //List<int> features = args[2];
-            string inputPath = @"C:\Users\higino\Dropbox\To Joao";
-            string outputPath = @"F:\teste\output.csv";
+            string inputPath = @"C:\Users\higin\Dropbox\To Joao";
+            string outputPath = @"D:\teste\output.csv";
             string output = "";
             List<int> features = new List<int>();
             string[] folders = System.IO.Directory.GetDirectories(inputPath, "*", System.IO.SearchOption.AllDirectories);
@@ -32,7 +32,7 @@ namespace StrokeParserConsole
             for (int i = 0; i < folders.Count(); i++)
             {
                 //session 5 is not uniform
-                if (folders[i] != @"C:\Users\higino\Dropbox\To Joao\05")
+                if (folders[i] != @"C:\Users\higin\Dropbox\To Joao\05")
                 {
                     string[] strokeFiles = System.IO.Directory.GetFiles(folders[i], "*.txt");
                     string[] expressionFiles = System.IO.Directory.GetFiles(folders[i], "*.csv");
