@@ -21,14 +21,33 @@ namespace StrokeParser
             emotionDetections = ConvertTime(emotionData);
         }
 
+        public Parser(string strokeFile)
+        {
+            string[][] strokeData = ReadStrokeFile(strokeFile);
+
+            strokes = GetStrokes(strokeData);
+            emotionDetections = null;
+        }
+
 
         public string[][] ReadEmotionFile(string filePath)
         {
-            var file = File.ReadAllText(filePath);
-            var dataSet = file.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            List<string[]> clean = new List<string[]>();
-            var parsedDataSet = dataSet.Apply(x => x.Split(';'));
-            return parsedDataSet;
+            string[][] parsedDataSet = null;
+            try
+            {
+                var file = File.ReadAllText(filePath);
+                file = file.Replace("FIND_FAILED", "0");
+                file = file.Replace("FIT_FAILED", "0");
+                var dataSet = file.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                List<string[]> clean = new List<string[]>();
+                parsedDataSet = dataSet.Apply(x => x.Split(';'));
+                return parsedDataSet;
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine("{0}: The read operation could not be performed because the specified part of the file is locked.", e.GetType().Name);
+            }
+            return null;
         }
 
         public string[][] ReadStrokeFile(string filePath)
@@ -65,34 +84,27 @@ namespace StrokeParser
         private string[][] ConvertTime(String[][] emotionData)
         {
             double initialTime = 0;
-            string temp = "";
             for(int i = 1; i < emotionData.GetLength(0); i++)
             {
-                string time = emotionData[i][0];
-                string[] splitTime = time.Split(':');
-                double minutes = Double.Parse(splitTime[0]);
-                double seconds = Double.Parse(splitTime[1]);
-                double timeNum =  minutes * 60 + seconds;
-                if(i == 1)
+                if (emotionData[i][0].Count() > 0)
                 {
-                    initialTime = timeNum;
+                    string time = emotionData[i][0];
+                    string[] splitTime = time.Split(':');
+                    double minutes = Double.Parse(splitTime[0]);
+                    double seconds = Double.Parse(splitTime[1]);
+                    double timeNum = minutes * 60 + seconds;
+                    if (i == 1)
+                    {
+                        initialTime = timeNum;
+                    }
+                    emotionData[i][0] = Convert.ToString(timeNum);
                 }
-                emotionData[i][0] = Convert.ToString(timeNum);
             }
             for (int j = 1; j < emotionData.GetLength(0); j++)
             {
                 emotionData[j][0] = Convert.ToString(Math.Round(Double.Parse(emotionData[j][0]) - initialTime, 1));
             }
-            /*for (int x = 0; x < emotionData.GetLength(0); x++)
-            {
-                for (int w = 0; w < 8; w++)
-                {
-                    temp += emotionData[x][w] + "\t";
-                }
-                temp += "\n";
-            }
-            Console.WriteLine(temp);*/
-                return emotionData;
+            return emotionData;
         }
 
         public List<Stroke> GetStrokes(string[][] strokeData)
@@ -318,12 +330,48 @@ namespace StrokeParser
                         case 47:
                             result += area(strokes[i]) + "\t";
                             break;
+                        case 48:
+                            if (emotionDetections != null)
+                            {
+                                var va = getValenceData(strokes[i], strokes, emotionDetections);
+                                if (va == "" || va == " ")
+                                    result += "Unavailable" + "\t";
+                                else
+                                    result += va + "\t";
+                                break;
+                            }
+                            else
+                                result += "Unavailable" + "\t";
+                            break;
+                        case 49:
+                            if (emotionDetections != null)
+                            {
+                                var ar = getArousalData(strokes[i], strokes, emotionDetections);
+                                if (ar == "")
+                                    result += "Unavailable" + "\t";
+                                else
+                                    result += ar + "\t";
+                                break;
+                            }
+                            else
+                                result += "Unavailable" + "\t";
+                            break;
                         default:
                             break;
                     }
                     //Console.WriteLine("feature " + featureNums[f] + " done");
                 }
-                result += getEmotion(strokes[i], strokes, emotionDetections);
+                //Emotion Labeling
+                if (emotionDetections != null)
+                {
+                    var em = getEmotionData(strokes[i], strokes, emotionDetections);
+                    if (em == "")
+                        result += "Unavailable";
+                    else
+                        result += em;
+                }
+                else
+                    result += "Unavailable";
                 result += "\n";
                 //Console.WriteLine("stroke " + i + " done\n");
 
@@ -444,7 +492,7 @@ namespace StrokeParser
             double lastInstant = stroke.Points[numberOfPoints - 1].TimeStamp;
             double firstInstant = stroke.Points[0].TimeStamp;
             double duration = lastInstant - firstInstant;
-            return duration;
+            return Math.Round(duration, 6);
         }
 
         //F2 - Dist2Prev - subtracting the initial timestamp of the current stroke, from the initial timestamp of the previous stroke.
@@ -453,7 +501,7 @@ namespace StrokeParser
             double currentStrokeTime = current.Points[0].TimeStamp;
             double previousStrokeTime = previous.Points[previous.Points.Count()-1].TimeStamp;
             double duration = currentStrokeTime - previousStrokeTime;
-            return duration;
+            return Math.Round(duration,6);
         }
 
         //F3 - timeElapsed - time elapsed from starting
@@ -461,7 +509,7 @@ namespace StrokeParser
         {
             double currentStrokeTime = stroke.Points[0].TimeStamp;
             double duration = currentStrokeTime - initTime;
-            return duration;
+            return Math.Round(duration,6);
         }
 
         #endregion
@@ -503,7 +551,7 @@ namespace StrokeParser
         //F8 - xStd - the standard deviation of x Coordinates 
         public double xStd(Stroke stroke)
         {
-            return StandardDeviation(getXpos(stroke));
+            return Math.Round(StandardDeviation(getXpos(stroke)),6);
         }
 
         //F9 - yMin - Min recorded Y
@@ -542,7 +590,7 @@ namespace StrokeParser
         //F13 - yStd - the standard deviation of y Coordinates 
         public double yStd(Stroke stroke)
         {
-            return StandardDeviation(getYpos(stroke));
+            return Math.Round(StandardDeviation(getYpos(stroke)),6);
         }
         #endregion
 
@@ -562,7 +610,7 @@ namespace StrokeParser
         //F16 - pMean
         public double pMean(Stroke stroke)
         {
-            return getPressures(stroke).Average();
+            return Math.Round(getPressures(stroke).Average(),6);
         }
 
         //F17 - pMedian - the middle value of pressures (the average of the two middle ones in case of a even lenght)
@@ -583,7 +631,7 @@ namespace StrokeParser
         //F18 - pStd - the standard deviation of pressures 
         public double pStd(Stroke stroke)
         {
-            return StandardDeviation(getPressures(stroke));
+            return Math.Round(StandardDeviation(getPressures(stroke)),6);
         }
 
         #endregion
@@ -604,7 +652,7 @@ namespace StrokeParser
             {
                 traveledPath += (double)Math.Sqrt(Math.Pow(yPos[i] - yPos[i - 1], 2) + Math.Pow(xPos[i] - xPos[i - 1], 2));
             }
-            return traveledPath;
+            return Math.Round(traveledPath,6);
         }
 
         //F20 - Relocation in X - xMax-Xmin;
@@ -1119,11 +1167,11 @@ namespace StrokeParser
 
         #endregion
 
-        #region Emotion Parsing
-        public string getEmotion(Stroke stroke, List<Stroke> strokeList, String[][] emotionData)
+        #region Emotion, Valence and Arousal Parsing
+        public string getEmotionDebug(Stroke stroke, List<Stroke> strokeList, String[][] emotionData, int i)
         {
             List<string[]> strokeWindow = new List<string[]>();
-            string emotion = "what";
+            string emotion = "";
             double sessionStrokeStartTime = strokeList[0].Points[0].TimeStamp;
             double currentStrokeStartTime = Math.Round(stroke.Points[0].TimeStamp - sessionStrokeStartTime, 2);
             double currentStrokeEndTime = Math.Round(stroke.Points[stroke.Points.Count() - 1].TimeStamp - sessionStrokeStartTime, 2);
@@ -1136,17 +1184,22 @@ namespace StrokeParser
                     {
                         strokeWindow.Add(emotionData[j]);
                     }
-                    if (currentEmotionTime > currentStrokeEndTime)
+                    if (currentEmotionTime >= currentStrokeEndTime)
                     {
                         if (strokeWindow.Count > 0)
                         {
+                            Console.WriteLine("Stroke " + i + " ---- apanhei " + strokeWindow.Count + " linhas de emotional data");
+                            Console.WriteLine("Stroke " + i + " ---- Emotion Start Time : " + strokeWindow[0][0]);
+                            Console.WriteLine("Stroke " + i + " ---- Stroke Time : " + currentStrokeStartTime + "      " + currentStrokeEndTime + "\n");
                             emotion = FindMaxEmotion(strokeWindow);
                             strokeWindow.Clear();
                             return emotion;
                         }
                         else
                         {
-                            strokeWindow.Add(emotionData[j]);
+                            Console.WriteLine("Stroke " + i + " ---- nao apanhei emotional data");
+                            Console.WriteLine("Stroke " + i + " ---- Stroke Time : " + currentStrokeStartTime + "      " + currentStrokeEndTime);
+                            strokeWindow.Add(emotionData[j-1]);
                             emotion = FindMaxEmotion(strokeWindow);
                             strokeWindow.Clear();
                             return emotion;
@@ -1159,6 +1212,122 @@ namespace StrokeParser
             return emotion;
         }
 
+        public string getEmotionData(Stroke stroke, List<Stroke> strokeList, String[][] emotionData)
+        {
+            List<string[]> strokeWindow = new List<string[]>();
+            string emotion = "";
+            double sessionStrokeStartTime = strokeList[0].Points[0].TimeStamp;
+            double currentStrokeStartTime = Math.Round(stroke.Points[0].TimeStamp - sessionStrokeStartTime, 2);
+            double currentStrokeEndTime = Math.Round(stroke.Points[stroke.Points.Count() - 1].TimeStamp - sessionStrokeStartTime, 2);
+            for (int j = 1; j < emotionData.GetLength(0); j++)
+            {
+                double currentEmotionTime = Double.Parse(emotionData[j][0]);
+                if (currentEmotionTime >= currentStrokeStartTime)
+                {
+                    if (currentEmotionTime <= currentStrokeEndTime)
+                    {
+                        strokeWindow.Add(emotionData[j]);
+                    }
+                    if (currentEmotionTime >= currentStrokeEndTime)
+                    {
+                        if (strokeWindow.Count > 0)
+                        {
+                            emotion = FindMaxEmotion(strokeWindow);
+                            strokeWindow.Clear();
+                            return emotion;
+                        }
+                        else
+                        {
+                            strokeWindow.Add(emotionData[j - 1]);
+                            emotion = FindMaxEmotion(strokeWindow);
+                            strokeWindow.Clear();
+                            return emotion;
+                        }
+                    }
+                    else
+                        continue;
+                }
+            }
+            return emotion;
+        }
+
+        public string getValenceData(Stroke stroke, List<Stroke> strokeList, String[][] emotionData)
+        {
+            List<string[]> strokeWindow = new List<string[]>();
+            string valence = "";
+            double sessionStrokeStartTime = strokeList[0].Points[0].TimeStamp;
+            double currentStrokeStartTime = Math.Round(stroke.Points[0].TimeStamp - sessionStrokeStartTime, 2);
+            double currentStrokeEndTime = Math.Round(stroke.Points[stroke.Points.Count() - 1].TimeStamp - sessionStrokeStartTime, 2);
+            for (int j = 1; j < emotionData.GetLength(0); j++)
+            {
+                double currentEmotionTime = Double.Parse(emotionData[j][0]);
+                if (currentEmotionTime >= currentStrokeStartTime)
+                {
+                    if (currentEmotionTime <= currentStrokeEndTime)
+                    {
+                        strokeWindow.Add(emotionData[j]);
+                    }
+                    if (currentEmotionTime >= currentStrokeEndTime)
+                    {
+                        if (strokeWindow.Count > 0)
+                        {
+                            valence = FindMaxValence(strokeWindow);
+                            strokeWindow.Clear();
+                            return valence;
+                        }
+                        else
+                        {
+                            strokeWindow.Add(emotionData[j - 1]);
+                            valence = FindMaxValence(strokeWindow);
+                            strokeWindow.Clear();
+                            return valence;
+                        }
+                    }
+                    else
+                        continue;
+                }
+            }
+            return valence;
+        }
+
+        public string getArousalData(Stroke stroke, List<Stroke> strokeList, String[][] emotionData)
+        {
+            List<string[]> strokeWindow = new List<string[]>();
+            string arousal = "";
+            double sessionStrokeStartTime = strokeList[0].Points[0].TimeStamp;
+            double currentStrokeStartTime = Math.Round(stroke.Points[0].TimeStamp - sessionStrokeStartTime, 2);
+            double currentStrokeEndTime = Math.Round(stroke.Points[stroke.Points.Count() - 1].TimeStamp - sessionStrokeStartTime, 2);
+            for (int j = 1; j < emotionData.GetLength(0); j++)
+            {
+                double currentEmotionTime = Double.Parse(emotionData[j][0]);
+                if (currentEmotionTime >= currentStrokeStartTime)
+                {
+                    if (currentEmotionTime <= currentStrokeEndTime)
+                    {
+                        strokeWindow.Add(emotionData[j]);
+                    }
+                    if (currentEmotionTime >= currentStrokeEndTime)
+                    {
+                        if (strokeWindow.Count > 0)
+                        {
+                            arousal = FindMaxArousal(strokeWindow);
+                            strokeWindow.Clear();
+                            return arousal;
+                        }
+                        else
+                        {
+                            strokeWindow.Add(emotionData[j - 1]);
+                            arousal = FindMaxArousal(strokeWindow);
+                            strokeWindow.Clear();
+                            return arousal;
+                        }
+                    }
+                    else
+                        continue;
+                }
+            }
+            return arousal;
+        }
 
         private string FindMaxEmotion(List<string[]> emotionData)
         {
@@ -1171,7 +1340,7 @@ namespace StrokeParser
 
             foreach (string[] line in emotionData)
             {
-                for(int i = 2; i < line.Count(); i++)
+                for(int i = 1; i < line.Count(); i++)
                 {
                     switch (i)
                     {
@@ -1204,40 +1373,69 @@ namespace StrokeParser
             var maxi = averages.Max();
             var id = averages.ToList().IndexOf(maxi);
 
-            string emotion = "say";
-            if (id < 0)
-            {
-                emotion = "cwaeifhaidhfapis";
-            }
+            string emotion = "";
 
             if (id > -1)
             {
                 switch (id)
                 {
+                    case 0:
+                        //emotion = "happy";
+                        emotion = "1";
+                        break;
                     case 1:
-                        emotion = "happy";
+                        //emotion = "sad";
+                        emotion = "2";
                         break;
                     case 2:
-                        emotion = "sad";
+                        //emotion = "angry";
+                        emotion = "3";
                         break;
                     case 3:
-                        emotion = "angry";
+                        //emotion = "surprised";
+                        emotion = "4";
                         break;
                     case 4:
-                        emotion = "surprised";
+                        //emotion = "scared";
+                        emotion = "5";
                         break;
                     case 5:
-                        emotion = "scared";
-                        break;
-                    case 6:
-                        emotion = "disgusted";
+                        //emotion = "disgusted";
+                        emotion = "6";
                         break;
                     default:
+                        emotion = "error - " + id.ToString();
                         break;
                 }
             }
 
             return emotion;
+        }
+
+        private string FindMaxValence(List<string[]> emotionData)
+        {
+            List<double> valence = new List<double>();
+            foreach (string[] line in emotionData)
+            {
+                for (int i = 1; i < line.Count(); i++)
+                {
+                    valence.Add(Double.Parse(line[9]));
+                }
+            }
+            return valence.Average().ToString();
+        }
+
+        private string FindMaxArousal(List<string[]> emotionData)
+        {
+            List<double> arousal = new List<double>();
+            foreach (string[] line in emotionData)
+            {
+                for (int i = 1; i < line.Count(); i++)
+                {
+                    arousal.Add(Double.Parse(line[10]));
+                }
+            }
+            return arousal.Average().ToString();
         }
 
         #endregion
