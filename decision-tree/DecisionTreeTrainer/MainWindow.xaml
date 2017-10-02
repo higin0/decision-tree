@@ -1,0 +1,23 @@
+﻿<Window x:Class="DecisionTreeTrainer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DecisionTreeTrainer"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid Name="FeaturePanel" Margin="0" VerticalAlignment="Top" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Button Grid.Row="0" Content="Load Feature CSV" Background="#FFDDDDDD" Click="CSV_Load"/>
+        <ScrollViewer  Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Name="InnerPanel" VerticalAlignment="Top"/>
+        </ScrollViewer>
+        <Button  Grid.Row="2" Name="SelectAll" Content="Select All" Background="#FFDDDDDD" Click="FeatureSelectAll" Visibility="Visible"/>
+        <Button  Grid.Row="3" Name="SelectNone" Content="Select None" Background="#FFDDDDDD" Click="FeatureSelectNone" Visibility="Visible"/>
+    </Grid>
+</Window>

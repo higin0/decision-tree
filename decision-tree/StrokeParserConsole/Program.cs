@@ -17,6 +17,7 @@ namespace StrokeParserConsole
             //List<int> features = args[2];
             string inputPath = @"C:\Users\higin\Dropbox\To Joao";
             string outputPath = @"D:\teste\output.csv";
+            string confirmation;
             
             string output = "";
             List<int> features = new List<int>();
@@ -27,7 +28,7 @@ namespace StrokeParserConsole
             try
             {
                 //ToDo - Fazer isto dinamicamente
-                File.WriteAllText(outputPath, "Session;Stroke#;Duration;Dist2prev;timeElappsed;xMin;xMax;xMean;xMedian;xSTD;yMin;yMax;yMean;yMedian;ySTD;pMin;pMax;pMean;pMedian;pSTD;lengthT;spanX;spanY;distanceX;distanceY;displacement;1stDVPCx;1stDVPCy;1stDVPP;2ndDVPCx;2ndDVPCy;2ndDVPP;velocity;acceleration;wj_Mean;wj_Min;wj_Max;curlX;curlY;1stDVcurlx;1stDVcurly;angleM;angle1;angle2;numOfStrk1;numOfStrk3;numOfStrk5;numOfStrk10;Area;Valence;Arousal;Emotion\n");
+                File.WriteAllText(outputPath, "Duration;Dist2prev;timeElappsed;xMin;xMax;xMean;xMedian;xSTD;yMin;yMax;yMean;yMedian;ySTD;pMin;pMax;pMean;pMedian;pSTD;lengthT;spanX;spanY;distanceX;distanceY;displacement;1stDVPCx;1stDVPCy;1stDVPP;2ndDVPCx;2ndDVPCy;2ndDVPP;velocity;acceleration;wj_Mean;wj_Min;wj_Max;curlX;curlY;1stDVcurlx;1stDVcurly;angleM;angle1;angle2;numOfStrk1;numOfStrk3;numOfStrk5;numOfStrk10;Area;Valence;Arousal;Emotion\n");
             }
             catch (IOException e)
             {
@@ -69,20 +70,27 @@ namespace StrokeParserConsole
                     if (strokeFiles.Count() == 1 && expressionFiles.Count() == 0)
                     {
                         Console.WriteLine("Stroke Data found, but no emotional detection data is present.");
-                        Console.WriteLine("Features regarding strokes will be calculated, but emotional labelling is impossible.");
-                        Console.WriteLine("Press any key to continue evaluation");
-                        Console.ReadLine();
-                        Parser strokes = new Parser(strokeFiles[0]);
-                        output = strokes.GetResults(features, i);
-                        output = strokes.ConvertToCSV(output, '\t');
-                        try
+                        Console.WriteLine("Type \"y\" to calculate. Features regarding emotion will not be calculated");
+                        
+                        confirmation = Console.ReadLine();
+                        if (confirmation == "y")
                         {
-                            File.AppendAllText(outputPath, output);
-                            Console.WriteLine("--------------------------------- Session " + (i + 1) + " Written without emotional info ------------");
+                            Parser strokes = new Parser(strokeFiles[0]);
+                            output = strokes.GetResults(features, i);
+                            output = strokes.ConvertToCSV(output, '\t');
+                            try
+                            {
+                                File.AppendAllText(outputPath, output);
+                                Console.WriteLine("--------------------------------- Session " + (i + 1) + " Written without emotional info ------------");
+                            }
+                            catch (IOException e)
+                            {
+                                Console.WriteLine("{0}: The write operation could not be performed because the specified part of the file is locked.", e.GetType().Name);
+                            }
                         }
-                        catch (IOException e)
+                        else
                         {
-                            Console.WriteLine("{0}: The write operation could not be performed because the specified part of the file is locked.", e.GetType().Name);
+                            Console.WriteLine("Session will not be calculated");
                         }
                     }
 
@@ -105,6 +113,9 @@ namespace StrokeParserConsole
                 else
                 {
                     Console.WriteLine("Session " + (i+1) + " files are not in correct format");
+                    Console.WriteLine("Session will not be calculated");
+                    Console.WriteLine("Press any key to continue");
+                    Console.ReadKey();
                 }
             }
             Console.WriteLine("Sessions Calculated in " + outputPath);

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.10
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "decision-tree", "decision-tree\decision-tree.csproj", "{81BB5799-633C-4CBC-9D05-E5F30DF0557A}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StrokeParser", "StrokeParser\StrokeParser.csproj", "{159D7958-6BEC-4E28-A8DA-AD1AC6095092}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StrokeParserConsole", "StrokeParserConsole\StrokeParserConsole.csproj", "{02B9487F-7BF9-479C-B972-1F2A55A303E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DecisionTreeTrainer", "DecisionTreeTrainer\DecisionTreeTrainer.csproj", "{C4B6ABED-5A3E-4313-8937-95F64043DB30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,8 +41,15 @@ Global
 		{02B9487F-7BF9-479C-B972-1F2A55A303E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02B9487F-7BF9-479C-B972-1F2A55A303E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02B9487F-7BF9-479C-B972-1F2A55A303E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4B6ABED-5A3E-4313-8937-95F64043DB30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4B6ABED-5A3E-4313-8937-95F64043DB30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4B6ABED-5A3E-4313-8937-95F64043DB30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4B6ABED-5A3E-4313-8937-95F64043DB30}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E3C15666-D6E7-4115-ACCE-EC8C83579044}
 	EndGlobalSection
 EndGlobal

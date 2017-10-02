@@ -149,15 +149,50 @@ namespace DecisionTreeApp
         {
             if (checkedFeatures.Count() > 0 && checkedLabel > -1)
             {
-                //bool completed;
-                manager.TrainingSet(trainingSet, checkedFeatures, checkedLabel, 10);
-                //tree = manager.GetTree(trainingSet, checkedFeatures, checkedLabel, out completed);
-                //label1.Text = completed ? "Tree Generated" : "Tree not generated";
+                bool completed;
+                //manager.TrainingSet(trainingSet, checkedFeatures, checkedLabel, 10);
+                tree = manager.GetTree(trainingSet, checkedFeatures, checkedLabel, out completed);
+                label1.Text = completed ? "Tree Generated" : "Tree not generated";
             }
         }
 
+        private string EmotionTranslator(string code)
+        {
+            switch (code)
+            {
+                case "0":
+                    return "happy";
+                case "1":
+                    return "sad";
+                case "2":
+                    return "angry";
+                case "3":
+                    return "surprised";
+                case "4":
+                    return "scared";
+                case "5":
+                    return "disgusted";
+                default:
+                    return code;
+            }
+        }
+
+        private string decode(string label)
+        {
+            List<string> reverted = new List<string>();
+            var codes = manager._codebook;
+            var things = codes.Columns[0].Mapping.Keys;
+            for(int i = 0; i < things.Count(); i++)
+            {
+                reverted.Add(codes.Revert("Output", i));
+            }
+            reverted.ToArray();
+            return reverted[Convert.ToInt32(label)];
+        }
+
         private void button2_Click(object sender, EventArgs e)
-        { 
+        {
+            string output = "";
             Stream myStream = null;
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
 
@@ -165,6 +200,7 @@ namespace DecisionTreeApp
             openFileDialog1.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
             openFileDialog1.FilterIndex = 1;
             openFileDialog1.RestoreDirectory = true;
+            resultsGrid.Rows.Clear();
 
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
@@ -177,12 +213,13 @@ namespace DecisionTreeApp
                             testingPath = openFileDialog1.FileName;
                             infoLabel.Text = testingPath + " is loaded";
                             testingSet = manager.CreateDataSet(testingPath);
-                            string[] results = manager.calculate(tree, testingSet, checkedFeatures, checkedLabel, out error);
+                            string[] results = manager.calculate(tree, testingSet, checkedFeatures, out error);
                             for(int i = 0; i < results.Count(); i++)
                             {
                                 DataGridViewRow row = (DataGridViewRow)resultsGrid.Rows[0].Clone();
                                 row.Cells[0].Value = i;
-                                row.Cells[1].Value = results[i];
+                                row.Cells[1].Value = decode(results[i]);
+                                output += i + "\t"+ decode(results[i]) + "\n";
                                 resultsGrid.Rows.Add(row);
                             }
                             infoLabel.Text = testingPath + " is loaded";
@@ -190,6 +227,7 @@ namespace DecisionTreeApp
                             
                         }
                     }
+                    //File.WriteAllText(@"D:\teste\testing.txt", output);
                 }
                 catch (Exception ex)
                 {
@@ -198,9 +236,32 @@ namespace DecisionTreeApp
             }
         }
 
-        private void label4_Click(object sender, EventArgs e)
+        private void selectAll_Click(object sender, EventArgs e)
         {
+            if(featureFlow.HasChildren)
+            {
+                foreach(Control c in featureFlow.Controls)
+                {
+                    if(c is CheckBox)
+                    {
+                        ((CheckBox)c).Checked = true;
+                    }
+                }
+            }
+        }
 
+        private void selectNone_Click(object sender, EventArgs e)
+        {
+            if (featureFlow.HasChildren)
+            {
+                foreach (Control c in featureFlow.Controls)
+                {
+                    if (c is CheckBox)
+                    {
+                        ((CheckBox)c).Checked = false;
+                    }
+                }
+            }
         }
     }
 }

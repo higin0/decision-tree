@@ -8,6 +8,7 @@ using Accord.Math.Optimization.Losses;
 using Accord.MachineLearning.DecisionTrees.Rules;
 using System.IO;
 using System.Collections.Generic;
+using Accord.Statistics;
 
 namespace decision_tree
 {
@@ -24,7 +25,6 @@ namespace decision_tree
         public int[] _outputs { get; set; }
         public Codification _codebook { get; set; }
         public DecisionTree tree { get; set; }
-        public DecisionSet rules { get; set; }
 
         public T[][] SeparateLabelsFromDataset<T>(T[][] array2d, out T[] firstRow)
         {
@@ -37,7 +37,7 @@ namespace decision_tree
                     temp[i - 1][j] = array2d[i][j];
                 }
             }
-            firstRow = array2d[0];
+            firstRow = array2d[0].RemoveAt(0).RemoveAt(0);
             return temp;
         }
 
@@ -86,8 +86,8 @@ namespace decision_tree
             List<double> errors = new List<double>();
             double error;
             int entries = dataSet.GetLength(0);
-            int testingSetLenght = (int) (entries * (percentage/100));
-            for(int i = 0; i < (int) (100/percentage); i++)
+            int testingSetLenght = (int)(entries * (percentage / 100));
+            for (int i = 0; i < (int)(100 / percentage); i++)
             {
                 var testingSet = dataSet.Skip(testingSetLenght * i).Take(testingSetLenght).ToArray();
                 var trainingSet = dataSet.Except(testingSet).ToArray();
@@ -97,6 +97,7 @@ namespace decision_tree
                 var test = calculate(tree, testingSet, featureIndexes, labelIndex, out error);
                 errors.Add(error);
             }
+            //int a = 2;
         }
 
         public DecisionTree GetTree(string[][] dataSet, int[] featureIndexes, int labelIndex)
@@ -124,7 +125,7 @@ namespace decision_tree
         public DecisionTree GetTree(string[][] dataSet, int[] featureIndexes, int labelIndex, out bool completed)
         {
             var _inputs = GetInputs(dataSet, featureIndexes);
-            _labels = GetLabels(dataSet, labelIndex);
+            var _labels = GetLabels(dataSet, labelIndex);
 
             //creating the codebook with labels and converting them to integer representations
             _codebook = new Codification("Output", _labels);
@@ -144,33 +145,10 @@ namespace decision_tree
             return tree;
         }
 
-        public string[] calculate(DecisionTree tree, string[][] testingSet, int[] checkedFeatures, out double error)
-        {
-            var inputs = GetInputs(testingSet, checkedFeatures);
-            Console.WriteLine();
-            int[] predicted = tree.Decide(inputs);
-            string[] result = predicted.Select(z => z.ToString()).ToArray();
-            //File.WriteAllLines(@"C:\Users\higin\Desktop\predictions.txt", result);
-
-
-            //creating the codebook with labels and converting them to integer representations
-            var codebook = new Codification("Output", _labels);
-            var outputs = codebook.Translate("Output", _labels);
-
-            error = new ZeroOneLoss(tree.Decide(inputs)).Loss(outputs);
-            //Console.WriteLine("Error of: " + error);
-
-            // Moreover, we may decide to convert our tree to a set of rules:
-            rules = tree.ToRules();
-            // And using the codebook, we can inspect the tree reasoning:
-            string ruleText = rules.ToString(codebook, "Output", System.Globalization.CultureInfo.InvariantCulture);
-            File.WriteAllText(@"D:\teste\rules.txt", ruleText);
-            return result;
-        }
-
         public string[] calculate(DecisionTree tree, string[][] testingSet, int[] checkedFeatures, int labelIndex, out double error)
         {
             var inputs = GetInputs(testingSet, checkedFeatures);
+            var labels = GetLabels(testingSet, labelIndex);
 
             int[] predicted = tree.Decide(inputs);
             string[] result = predicted.Select(z => z.ToString()).ToArray();
@@ -178,8 +156,8 @@ namespace decision_tree
 
 
             //creating the codebook with labels and converting them to integer representations
-            var codebook = new Codification("Output", _labels);
-            var outputs = codebook.Translate("Output", _labels);
+            var codebook = new Codification("Output", labels);
+            var outputs = codebook.Translate("Output", labels);
 
             error = new ZeroOneLoss(outputs).Loss(tree.Decide(inputs));
             //Console.WriteLine("Error of: " + error);

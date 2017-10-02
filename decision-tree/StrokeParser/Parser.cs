@@ -163,12 +163,12 @@ namespace StrokeParser
         public string GetResults(List<int> featureNums, int session)
         {
             string result = "";
-            result += "Session " + session;
+            //result += "Session " + session;
             double initTime = 0;
             initTime = strokes[0].Points[0].TimeStamp;
             for (int i = 0; i < strokes.Count(); i++)
             {
-                result += "\tStroke " + i + "\t";
+                //result += "\tStroke " + i + "\t";
                 for (int f = 0; f < featureNums.Count(); f++)
                 {
                     switch (featureNums[f])
@@ -335,26 +335,26 @@ namespace StrokeParser
                             {
                                 var va = getValenceData(strokes[i], strokes, emotionDetections);
                                 if (va == "" || va == " ")
-                                    result += "Unavailable" + "\t";
+                                    result += "0" + "\t";
                                 else
                                     result += va + "\t";
                                 break;
                             }
                             else
-                                result += "Unavailable" + "\t";
+                                result += "0" + "\t";
                             break;
                         case 49:
                             if (emotionDetections != null)
                             {
                                 var ar = getArousalData(strokes[i], strokes, emotionDetections);
                                 if (ar == "")
-                                    result += "Unavailable" + "\t";
+                                    result += "0" + "\t";
                                 else
                                     result += ar + "\t";
                                 break;
                             }
                             else
-                                result += "Unavailable" + "\t";
+                                result += "0" + "\t";
                             break;
                         default:
                             break;
@@ -366,12 +366,12 @@ namespace StrokeParser
                 {
                     var em = getEmotionData(strokes[i], strokes, emotionDetections);
                     if (em == "")
-                        result += "Unavailable";
+                        result += "Unknown";
                     else
                         result += em;
                 }
                 else
-                    result += "Unavailable";
+                    result += "Unknown";
                 result += "\n";
                 //Console.WriteLine("stroke " + i + " done\n");
 
@@ -970,36 +970,30 @@ namespace StrokeParser
 
             xPos = getXpos(stroke);
             yPos = getYpos(stroke);
-            //if (xPos.Count() % 2 != 0)
-            //{
-                midIndex = (int) Math.Floor((xPos.Count()) / 2f);
-                firstQuarterPos = (int) Math.Floor((xPos.Count()) / 4f);
-                lastQuarterPos = (int) Math.Floor((xPos.Count()) * (3f / 4));
 
-                deltaX1 = xPos[0] - xPos[midIndex];
-                deltaY1 = yPos[0] - yPos[midIndex];
-                deltaX2 = xPos[xPos.Count() - 1] - xPos[midIndex];
-                deltaY2 = yPos[xPos.Count() - 1] - yPos[midIndex];
-            //}
-            /*else
-            {
-                midIndex = (int)((xPos.Count() - 1) / 2);
-                firstQuarterPos = (int)((xPos.Count() - 1) / 4);
-                lastQuarterPos = (int)Math.Floor((xPos.Count() - 1) * (3f / 4));
-                deltaX1 = ((xPos[(int) Math.Floor(midIndex + 0f)] + xPos[(int) Math.Ceiling(midIndex + 0f)]) / 2) - ((xPos[(int)Math.Floor(firstQuarterPos + 0f)] + xPos[(int)Math.Ceiling(firstQuarterPos + 0f)]) / 2);
-                deltaY1 = ((yPos[(int )Math.Floor(midIndex + 0f)] + yPos[(int) Math.Ceiling(midIndex + 0f)]) / 2) - ((yPos[(int)Math.Floor(firstQuarterPos + 0f)] + yPos[(int)Math.Ceiling(firstQuarterPos + 0f)]) / 2);
-                deltaX2 = ((xPos[(int)Math.Floor(lastQuarterPos + 0f)] + xPos[(int)Math.Ceiling(lastQuarterPos + 0f)]) / 2) - ((xPos[(int)Math.Floor(midIndex + 0f)] + xPos[(int)Math.Ceiling(midIndex + 0f)]) / 2);
-                deltaY2 = ((yPos[(int)Math.Floor(lastQuarterPos + 0f)] + yPos[(int)Math.Ceiling(lastQuarterPos + 0f)]) / 2) - ((yPos[(int)Math.Floor(midIndex + 0f)] + yPos[(int)Math.Ceiling(midIndex + 0f)]) / 2);
-            }*/
+            midIndex = (int) Math.Floor((xPos.Count()) / 2f);
+            firstQuarterPos = (int) Math.Floor((xPos.Count()) / 4f);
+            lastQuarterPos = (int) Math.Floor((xPos.Count()) * (3f / 4));
+
+            deltaX1 = xPos[0] - xPos[midIndex];
+            deltaY1 = yPos[0] - yPos[midIndex];
+            deltaX2 = xPos[xPos.Count() - 1] - xPos[midIndex];
+            deltaY2 = yPos[xPos.Count() - 1] - yPos[midIndex];
 
             var dot = deltaX1 * deltaX2 + deltaY1 * deltaY2;
             var normU = Math.Round(Math.Sqrt(deltaX1 * deltaX1 + deltaY1 * deltaY1),4);
             var normV= Math.Round(Math.Sqrt(deltaX2 * deltaX2 + deltaY2 * deltaY2),4);
             if (normU*normV != 0)
             {
-                angle = Math.Acos(dot / (normU*normV));
+                angle = Math.Acos(Math.Round(dot / (normU*normV),4));
                 angle = angle * 57.2958; //to degrees
-                return Math.Round(angle, 4);
+                var result = Math.Round(angle, 4);
+                if (Double.IsNaN(result) || Double.IsInfinity(result))
+                {
+                    return 0;
+                }
+                else
+                    return result;
             }
             else
                 return 0;
@@ -1031,7 +1025,7 @@ namespace StrokeParser
             var normV = Math.Round(Math.Sqrt(deltaX2 * deltaX2 + deltaY2 * deltaY2), 4);
             if (normU * normV != 0)
             {
-                angle = Math.Acos(dot / (normU * normV));
+                angle = Math.Acos(Math.Round(dot / (normU * normV), 4));
                 angle = angle * 57.2958; //to degrees
                 return Math.Round(angle, 4);
             }
@@ -1066,7 +1060,7 @@ namespace StrokeParser
             var normV = Math.Round(Math.Sqrt(deltaX2 * deltaX2 + deltaY2 * deltaY2), 4);
             if (normU * normV != 0)
             {
-                angle = Math.Acos(dot / (normU * normV));
+                angle = Math.Acos(Math.Round(dot / (normU * normV), 4));
                 angle = angle * 57.2958; //to degrees
                 return Math.Round(angle, 4);
             }
@@ -1380,28 +1374,28 @@ namespace StrokeParser
                 switch (id)
                 {
                     case 0:
-                        //emotion = "happy";
-                        emotion = "1";
+                        emotion = "happy";
+                        //emotion = "1";
                         break;
                     case 1:
-                        //emotion = "sad";
-                        emotion = "2";
+                        emotion = "sad";
+                        //emotion = "2";
                         break;
                     case 2:
-                        //emotion = "angry";
-                        emotion = "3";
+                        emotion = "angry";
+                        //emotion = "3";
                         break;
                     case 3:
-                        //emotion = "surprised";
-                        emotion = "4";
+                        emotion = "surprised";
+                        //emotion = "4";
                         break;
                     case 4:
-                        //emotion = "scared";
-                        emotion = "5";
+                        emotion = "scared";
+                        //emotion = "5";
                         break;
                     case 5:
-                        //emotion = "disgusted";
-                        emotion = "6";
+                        emotion = "disgusted";
+                        //emotion = "6";
                         break;
                     default:
                         emotion = "error - " + id.ToString();
