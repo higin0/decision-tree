@@ -17,6 +17,7 @@ namespace DecisionTreeApp
     public partial class Form1 : Form
     {
         public List<int> listFeatures = new List<int>();
+        public List<int> listLabels = new List<int>();
         private string[][] trainingSet;
         private string[][] testingSet;
         public int[] checkedFeatures;
@@ -35,6 +36,8 @@ namespace DecisionTreeApp
             labelLabel.Text = "";
             label1.Text = "";
             testingInfoLabel.Text = "";
+            treeButton.Enabled = false;
+            testingGroup.Enabled = false;
         }
 
         private void trainingSet_Click(object sender, EventArgs e)
@@ -86,32 +89,49 @@ namespace DecisionTreeApp
         private void selectFeatures_Click(object sender, EventArgs e)
         {
             labelFlow.Controls.Clear();
-            for (int j = 0; j < featureFlow.Controls.Count; j++)
+            listLabels.Clear();
+            listFeatures.Clear();
+            for (int i = 0; i < featureFlow.Controls.Count; i++)
             {
-                if (!((CheckBox) featureFlow.Controls[j]).Checked)
+                if (((CheckBox)featureFlow.Controls[i]).Checked)
                 {
-                    RadioButton rb_label = new System.Windows.Forms.RadioButton();
-                    rb_label.Tag = featureFlow.Controls[j].Tag;
-                    rb_label.Text = featureFlow.Controls[j].Text;
-                    labelFlow.Controls.Add(rb_label);
+                    listFeatures.Add(i);
                 }
                 else
                 {
-                    listFeatures.Add(j);
+                    listLabels.Add(i);
                 }
             }
+
             if (listFeatures.Count > 0)
             {
-                featureLabel.Text = listFeatures.Count.ToString() + " features selected";
-                checkedFeatures = listFeatures.ToArray();
-                featureFlow.Enabled = false;
-                unselectFeatureButton.Visible = true;
+                if (listFeatures.Count >= featureFlow.Controls.Count)
+                {
+                    featureLabel.Text = "At least 1 feature must be unselected";
+                }
+                else if (listFeatures.Count != featureFlow.Controls.Count)
+                {
+                    selectAll.Enabled = false;
+                    selectNone.Enabled = false;
+                    featureLabel.Text = listFeatures.Count.ToString() + " features selected";
+                    checkedFeatures = listFeatures.ToArray();
+                    featureFlow.Enabled = false;
+                    unselectFeatureButton.Visible = true;
+                    for(int j = 0; j < listLabels.Count; j++)
+                    {
+                        RadioButton rb_label = new System.Windows.Forms.RadioButton();
+                        rb_label.Tag = featureFlow.Controls[listLabels[j]].Tag;
+                        rb_label.Text = featureFlow.Controls[listLabels[j]].Text;
+                        labelFlow.Controls.Add(rb_label);
+                    }
+                }
             }
             else if (listFeatures.Count == 0)
             {
+                selectAll.Enabled = true;
+                selectNone.Enabled = true;
                 featureLabel.Text = "No features were selected";
             }
-
         }
 
         private void selectLabel_Click(object sender, EventArgs e)
@@ -128,12 +148,18 @@ namespace DecisionTreeApp
                 labelLabel.Text = featureFlow.Controls[checkedLabel].Text + " selected as label";
                 labelFlow.Enabled = false;
                 unselectedLabelButton.Visible = true;
+                treeButton.Enabled = true;
             }
         }
 
         private void unselectFeatures_Click(object sender, EventArgs e)
         {
+            listLabels.Clear();
+            listFeatures.Clear();
+            selectAll.Enabled = true;
+            selectNone.Enabled = true;
             featureLabel.Text = "Features were unselected";
+            unselectFeatureButton.Visible = false;
             listFeatures.Clear();
             featureFlow.Enabled = true;
         }
@@ -142,8 +168,10 @@ namespace DecisionTreeApp
         {
             labelLabel.Text = "Label was unselected";
             checkedLabel = -1;
+            unselectedLabelButton.Visible = false;
             labelFlow.Enabled = true;
-        }
+            treeButton.Enabled = false;
+        }   
 
         private void treeButton_Click(object sender, EventArgs e)
         {
@@ -152,7 +180,14 @@ namespace DecisionTreeApp
                 bool completed;
                 //manager.TrainingSet(trainingSet, checkedFeatures, checkedLabel, 10);
                 tree = manager.GetTree(trainingSet, checkedFeatures, checkedLabel, out completed);
-                label1.Text = completed ? "Tree Generated" : "Tree not generated";
+                if (completed) {
+                    label1.Text = "Tree Generated";
+                    testingGroup.Enabled = true;
+                }
+                else {
+                    label1.Text = "Tree not generated";
+                    testingGroup.Enabled = false;
+                }
             }
         }
 
@@ -231,7 +266,7 @@ namespace DecisionTreeApp
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
+                    MessageBox.Show("Error: Could not read file from disk. " + ex.Message);
                 }
             }
         }
@@ -262,6 +297,11 @@ namespace DecisionTreeApp
                     }
                 }
             }
+        }
+
+        private void errorLabel_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

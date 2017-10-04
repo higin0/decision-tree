@@ -50,12 +50,16 @@
             this.errorLabel = new System.Windows.Forms.Label();
             this.selectAll = new System.Windows.Forms.Button();
             this.selectNone = new System.Windows.Forms.Button();
+            this.testingGroup = new System.Windows.Forms.GroupBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.resultsGrid)).BeginInit();
+            this.testingGroup.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(9, 10);
+            this.button1.Location = new System.Drawing.Point(5, 11);
             this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(57, 62);
@@ -67,7 +71,7 @@
             // infoLabel
             // 
             this.infoLabel.AutoSize = true;
-            this.infoLabel.Location = new System.Drawing.Point(70, 10);
+            this.infoLabel.Location = new System.Drawing.Point(66, 12);
             this.infoLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.infoLabel.Name = "infoLabel";
             this.infoLabel.Size = new System.Drawing.Size(49, 13);
@@ -80,16 +84,16 @@
             this.featureFlow.AutoScrollMinSize = new System.Drawing.Size(1, 0);
             this.featureFlow.BackColor = System.Drawing.SystemColors.Window;
             this.featureFlow.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.featureFlow.Location = new System.Drawing.Point(9, 90);
+            this.featureFlow.Location = new System.Drawing.Point(10, 101);
             this.featureFlow.Margin = new System.Windows.Forms.Padding(2);
             this.featureFlow.Name = "featureFlow";
-            this.featureFlow.Size = new System.Drawing.Size(137, 396);
+            this.featureFlow.Size = new System.Drawing.Size(137, 378);
             this.featureFlow.TabIndex = 2;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 74);
+            this.label2.Location = new System.Drawing.Point(11, 85);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(48, 13);
@@ -101,16 +105,16 @@
             this.labelFlow.AutoScroll = true;
             this.labelFlow.BackColor = System.Drawing.SystemColors.Window;
             this.labelFlow.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.labelFlow.Location = new System.Drawing.Point(149, 90);
+            this.labelFlow.Location = new System.Drawing.Point(150, 101);
             this.labelFlow.Margin = new System.Windows.Forms.Padding(2);
             this.labelFlow.Name = "labelFlow";
-            this.labelFlow.Size = new System.Drawing.Size(137, 396);
+            this.labelFlow.Size = new System.Drawing.Size(137, 378);
             this.labelFlow.TabIndex = 3;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(147, 74);
+            this.label3.Location = new System.Drawing.Point(148, 85);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(33, 13);
@@ -119,7 +123,7 @@
             // 
             // featureButton
             // 
-            this.featureButton.Location = new System.Drawing.Point(8, 549);
+            this.featureButton.Location = new System.Drawing.Point(4, 542);
             this.featureButton.Margin = new System.Windows.Forms.Padding(2);
             this.featureButton.Name = "featureButton";
             this.featureButton.Size = new System.Drawing.Size(136, 19);
@@ -130,7 +134,7 @@
             // 
             // labelButton
             // 
-            this.labelButton.Location = new System.Drawing.Point(148, 549);
+            this.labelButton.Location = new System.Drawing.Point(144, 542);
             this.labelButton.Margin = new System.Windows.Forms.Padding(2);
             this.labelButton.Name = "labelButton";
             this.labelButton.Size = new System.Drawing.Size(136, 19);
@@ -141,7 +145,7 @@
             // 
             // unselectFeatureButton
             // 
-            this.unselectFeatureButton.Location = new System.Drawing.Point(8, 573);
+            this.unselectFeatureButton.Location = new System.Drawing.Point(4, 566);
             this.unselectFeatureButton.Margin = new System.Windows.Forms.Padding(2);
             this.unselectFeatureButton.Name = "unselectFeatureButton";
             this.unselectFeatureButton.Size = new System.Drawing.Size(136, 19);
@@ -154,7 +158,7 @@
             // labelLabel
             // 
             this.labelLabel.AutoSize = true;
-            this.labelLabel.Location = new System.Drawing.Point(70, 58);
+            this.labelLabel.Location = new System.Drawing.Point(66, 60);
             this.labelLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelLabel.Name = "labelLabel";
             this.labelLabel.Size = new System.Drawing.Size(74, 13);
@@ -164,7 +168,7 @@
             // featureLabel
             // 
             this.featureLabel.AutoSize = true;
-            this.featureLabel.Location = new System.Drawing.Point(70, 34);
+            this.featureLabel.Location = new System.Drawing.Point(66, 36);
             this.featureLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.featureLabel.Name = "featureLabel";
             this.featureLabel.Size = new System.Drawing.Size(85, 13);
@@ -173,7 +177,7 @@
             // 
             // unselectedLabelButton
             // 
-            this.unselectedLabelButton.Location = new System.Drawing.Point(148, 573);
+            this.unselectedLabelButton.Location = new System.Drawing.Point(144, 566);
             this.unselectedLabelButton.Margin = new System.Windows.Forms.Padding(2);
             this.unselectedLabelButton.Name = "unselectedLabelButton";
             this.unselectedLabelButton.Size = new System.Drawing.Size(136, 19);
@@ -185,7 +189,7 @@
             // 
             // treeButton
             // 
-            this.treeButton.Location = new System.Drawing.Point(8, 596);
+            this.treeButton.Location = new System.Drawing.Point(4, 589);
             this.treeButton.Margin = new System.Windows.Forms.Padding(2);
             this.treeButton.Name = "treeButton";
             this.treeButton.Size = new System.Drawing.Size(276, 19);
@@ -197,7 +201,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 617);
+            this.label1.Location = new System.Drawing.Point(6, 610);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(45, 13);
@@ -206,7 +210,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(310, 10);
+            this.button2.Location = new System.Drawing.Point(5, 11);
             this.button2.Margin = new System.Windows.Forms.Padding(2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(57, 62);
@@ -222,11 +226,11 @@
             this.resultsGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.key,
             this.output});
-            this.resultsGrid.Location = new System.Drawing.Point(310, 90);
+            this.resultsGrid.Location = new System.Drawing.Point(6, 101);
             this.resultsGrid.Margin = new System.Windows.Forms.Padding(2);
             this.resultsGrid.Name = "resultsGrid";
             this.resultsGrid.RowTemplate.Height = 24;
-            this.resultsGrid.Size = new System.Drawing.Size(324, 525);
+            this.resultsGrid.Size = new System.Drawing.Size(324, 497);
             this.resultsGrid.TabIndex = 13;
             // 
             // key
@@ -244,7 +248,7 @@
             // testingInfoLabel
             // 
             this.testingInfoLabel.AutoSize = true;
-            this.testingInfoLabel.Location = new System.Drawing.Point(372, 11);
+            this.testingInfoLabel.Location = new System.Drawing.Point(66, 12);
             this.testingInfoLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.testingInfoLabel.Name = "testingInfoLabel";
             this.testingInfoLabel.Size = new System.Drawing.Size(87, 13);
@@ -256,16 +260,18 @@
             this.errorLabel.AutoSize = true;
             this.errorLabel.BackColor = System.Drawing.SystemColors.Window;
             this.errorLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.errorLabel.Location = new System.Drawing.Point(310, 617);
+            this.errorLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.errorLabel.Location = new System.Drawing.Point(6, 608);
             this.errorLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.errorLabel.Name = "errorLabel";
-            this.errorLabel.Size = new System.Drawing.Size(37, 15);
+            this.errorLabel.Size = new System.Drawing.Size(45, 18);
             this.errorLabel.TabIndex = 15;
             this.errorLabel.Text = "Error: ";
+            this.errorLabel.Click += new System.EventHandler(this.errorLabel_Click);
             // 
             // selectAll
             // 
-            this.selectAll.Location = new System.Drawing.Point(13, 491);
+            this.selectAll.Location = new System.Drawing.Point(9, 484);
             this.selectAll.Name = "selectAll";
             this.selectAll.Size = new System.Drawing.Size(58, 37);
             this.selectAll.TabIndex = 16;
@@ -275,7 +281,7 @@
             // 
             // selectNone
             // 
-            this.selectNone.Location = new System.Drawing.Point(87, 491);
+            this.selectNone.Location = new System.Drawing.Point(83, 484);
             this.selectNone.Name = "selectNone";
             this.selectNone.Size = new System.Drawing.Size(57, 37);
             this.selectNone.TabIndex = 17;
@@ -283,38 +289,59 @@
             this.selectNone.UseVisualStyleBackColor = true;
             this.selectNone.Click += new System.EventHandler(this.selectNone_Click);
             // 
+            // testingGroup
+            // 
+            this.testingGroup.Controls.Add(this.button2);
+            this.testingGroup.Controls.Add(this.testingInfoLabel);
+            this.testingGroup.Controls.Add(this.resultsGrid);
+            this.testingGroup.Controls.Add(this.errorLabel);
+            this.testingGroup.Location = new System.Drawing.Point(304, 0);
+            this.testingGroup.Name = "testingGroup";
+            this.testingGroup.Size = new System.Drawing.Size(329, 632);
+            this.testingGroup.TabIndex = 18;
+            this.testingGroup.TabStop = false;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.labelLabel);
+            this.groupBox1.Controls.Add(this.button1);
+            this.groupBox1.Controls.Add(this.selectNone);
+            this.groupBox1.Controls.Add(this.infoLabel);
+            this.groupBox1.Controls.Add(this.selectAll);
+            this.groupBox1.Controls.Add(this.labelFlow);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.featureFlow);
+            this.groupBox1.Controls.Add(this.treeButton);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.unselectedLabelButton);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.unselectFeatureButton);
+            this.groupBox1.Controls.Add(this.featureLabel);
+            this.groupBox1.Controls.Add(this.labelButton);
+            this.groupBox1.Controls.Add(this.featureButton);
+            this.groupBox1.Location = new System.Drawing.Point(8, 0);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(290, 632);
+            this.groupBox1.TabIndex = 19;
+            this.groupBox1.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(645, 644);
-            this.Controls.Add(this.selectNone);
-            this.Controls.Add(this.selectAll);
-            this.Controls.Add(this.errorLabel);
-            this.Controls.Add(this.testingInfoLabel);
-            this.Controls.Add(this.resultsGrid);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.treeButton);
-            this.Controls.Add(this.unselectedLabelButton);
-            this.Controls.Add(this.featureLabel);
-            this.Controls.Add(this.labelLabel);
-            this.Controls.Add(this.unselectFeatureButton);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.labelButton);
-            this.Controls.Add(this.featureButton);
-            this.Controls.Add(this.featureFlow);
-            this.Controls.Add(this.labelFlow);
-            this.Controls.Add(this.infoLabel);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(641, 644);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.testingGroup);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.resultsGrid)).EndInit();
+            this.testingGroup.ResumeLayout(false);
+            this.testingGroup.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -342,5 +369,7 @@
         private System.Windows.Forms.Label errorLabel;
         private System.Windows.Forms.Button selectAll;
         private System.Windows.Forms.Button selectNone;
+        private System.Windows.Forms.GroupBox testingGroup;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }

@@ -164,7 +164,7 @@ namespace decision_tree
             rules = tree.ToRules();
             // And using the codebook, we can inspect the tree reasoning:
             string ruleText = rules.ToString(codebook, "Output", System.Globalization.CultureInfo.InvariantCulture);
-            File.WriteAllText(@"D:\teste\rules.txt", ruleText);
+            File.WriteAllText(@"F:\teste\rules.txt", ruleText);
             return result;
         }
 
@@ -174,7 +174,7 @@ namespace decision_tree
 
             int[] predicted = tree.Decide(inputs);
             string[] result = predicted.Select(z => z.ToString()).ToArray();
-            File.WriteAllLines(@"C:\Users\higin\Desktop\predictions.txt", result);
+            //File.WriteAllLines(@"C:\Users\higino\Desktop\predictions.txt", result);
 
 
             //creating the codebook with labels and converting them to integer representations

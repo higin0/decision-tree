@@ -15,8 +15,8 @@ namespace StrokeParserConsole
             //string inputPath = args[0];
             //string outputPath = args[1];
             //List<int> features = args[2];
-            string inputPath = @"C:\Users\higin\Dropbox\To Joao";
-            string outputPath = @"D:\teste\output.csv";
+            string inputPath = @"C:\Users\higino\Dropbox\To Joao";
+            string outputPath = @"F:\teste\output.csv";
             string confirmation;
             
             string output = "";
