@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Accord.MachineLearning.DecisionTrees;
-
+using System.Security.Permissions;
 
 namespace DecisionTreeApp
 {
@@ -70,6 +70,7 @@ namespace DecisionTreeApp
                                 cb_feature.Tag = i.ToString();
                                 cb_feature.Text = manager.featureNames[i];
                                 featureFlow.Controls.Add(cb_feature);
+
                             }
                         }
                     }
@@ -177,16 +178,31 @@ namespace DecisionTreeApp
         {
             if (checkedFeatures.Count() > 0 && checkedLabel > -1)
             {
-                bool completed;
-                //manager.TrainingSet(trainingSet, checkedFeatures, checkedLabel, 10);
-                tree = manager.GetTree(trainingSet, checkedFeatures, checkedLabel, out completed);
-                if (completed) {
-                    label1.Text = "Tree Generated";
-                    testingGroup.Enabled = true;
-                }
-                else {
-                    label1.Text = "Tree not generated";
-                    testingGroup.Enabled = false;
+                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                saveFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+                saveFileDialog1.FilterIndex = 1;
+                saveFileDialog1.RestoreDirectory = true;
+
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    string path = saveFileDialog1.FileName;
+                    string outputDirectory = Path.GetDirectoryName(saveFileDialog1.FileName);
+                    FileIOPermission f2 = new FileIOPermission(FileIOPermissionAccess.Write, outputDirectory);
+                    f2.AddPathList(FileIOPermissionAccess.Write | FileIOPermissionAccess.Read, outputDirectory);
+
+                    bool completed;
+                    //manager.TrainingSet(trainingSet, checkedFeatures, checkedLabel, 10);
+                    tree = manager.GetTree(trainingSet, checkedFeatures, checkedLabel, path, out completed);
+                    if (completed)
+                    {
+                        label1.Text = "Tree Generated";
+                        testingGroup.Enabled = true;
+                    }
+                    else
+                    {
+                        label1.Text = "Tree not generated";
+                        testingGroup.Enabled = false;
+                    }
                 }
             }
         }

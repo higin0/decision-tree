@@ -121,7 +121,7 @@ namespace decision_tree
             return tree;
         }
 
-        public DecisionTree GetTree(string[][] dataSet, int[] featureIndexes, int labelIndex, out bool completed)
+        public DecisionTree GetTree(string[][] dataSet, int[] featureIndexes, int labelIndex, string path, out bool completed)
         {
             var _inputs = GetInputs(dataSet, featureIndexes);
             _labels = GetLabels(dataSet, labelIndex);
@@ -141,6 +141,12 @@ namespace decision_tree
             teacher.Learn(_inputs, _outputs);
 
             completed = true;
+
+            // Moreover, we may decide to convert our tree to a set of rules:
+            rules = tree.ToRules();
+            // And using the codebook, we can inspect the tree reasoning:
+            string ruleText = rules.ToString(_codebook, "Output", System.Globalization.CultureInfo.InvariantCulture);
+            File.WriteAllText(path, ruleText);
             return tree;
         }
 
@@ -163,8 +169,8 @@ namespace decision_tree
             // Moreover, we may decide to convert our tree to a set of rules:
             rules = tree.ToRules();
             // And using the codebook, we can inspect the tree reasoning:
-            string ruleText = rules.ToString(codebook, "Output", System.Globalization.CultureInfo.InvariantCulture);
-            File.WriteAllText(@"F:\teste\rules.txt", ruleText);
+            //string ruleText = rules.ToString(codebook, "Output", System.Globalization.CultureInfo.InvariantCulture);
+            //File.WriteAllText(@"F:\teste\rules.txt", ruleText);
             return result;
         }
 

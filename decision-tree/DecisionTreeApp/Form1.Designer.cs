@@ -44,14 +44,14 @@
             this.label1 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.resultsGrid = new System.Windows.Forms.DataGridView();
-            this.key = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.output = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.testingInfoLabel = new System.Windows.Forms.Label();
             this.errorLabel = new System.Windows.Forms.Label();
             this.selectAll = new System.Windows.Forms.Button();
             this.selectNone = new System.Windows.Forms.Button();
             this.testingGroup = new System.Windows.Forms.GroupBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.key = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.output = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.resultsGrid)).BeginInit();
             this.testingGroup.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -233,18 +233,6 @@
             this.resultsGrid.Size = new System.Drawing.Size(324, 497);
             this.resultsGrid.TabIndex = 13;
             // 
-            // key
-            // 
-            this.key.HeaderText = "ID";
-            this.key.Name = "key";
-            this.key.ReadOnly = true;
-            // 
-            // output
-            // 
-            this.output.HeaderText = "Output";
-            this.output.Name = "output";
-            this.output.ReadOnly = true;
-            // 
             // testingInfoLabel
             // 
             this.testingInfoLabel.AutoSize = true;
@@ -325,6 +313,19 @@
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
             // 
+            // key
+            // 
+            this.key.HeaderText = "ID";
+            this.key.Name = "key";
+            this.key.ReadOnly = true;
+            // 
+            // output
+            // 
+            this.output.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.output.HeaderText = "Output";
+            this.output.Name = "output";
+            this.output.ReadOnly = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -334,7 +335,7 @@
             this.Controls.Add(this.testingGroup);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Decision Tree Trainer and Tester";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.resultsGrid)).EndInit();
             this.testingGroup.ResumeLayout(false);
@@ -363,13 +364,13 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.DataGridView resultsGrid;
-        private System.Windows.Forms.DataGridViewTextBoxColumn key;
-        private System.Windows.Forms.DataGridViewTextBoxColumn output;
         private System.Windows.Forms.Label testingInfoLabel;
         private System.Windows.Forms.Label errorLabel;
         private System.Windows.Forms.Button selectAll;
         private System.Windows.Forms.Button selectNone;
         private System.Windows.Forms.GroupBox testingGroup;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn key;
+        private System.Windows.Forms.DataGridViewTextBoxColumn output;
     }
 }

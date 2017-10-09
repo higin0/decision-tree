@@ -39,6 +39,10 @@ namespace StrokeParser
                 file = file.Replace("FIND_FAILED", "0");
                 file = file.Replace("FIT_FAILED", "0");
                 var dataSet = file.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                if (filePath.Substring(filePath.Length - 3) == "txt")
+                {
+                    file = file.Replace("\t", ";");
+                }
                 List<string[]> clean = new List<string[]>();
                 parsedDataSet = dataSet.Apply(x => x.Split(';'));
                 return parsedDataSet;
