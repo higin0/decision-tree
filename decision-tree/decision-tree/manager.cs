@@ -94,7 +94,7 @@ namespace decision_tree
 
                 var tree = GetTree(trainingSet, featureIndexes, labelIndex);
 
-                var test = calculate(tree, testingSet, featureIndexes, labelIndex, out error);
+                var test = train(tree, testingSet, featureIndexes, labelIndex, out error);
                 errors.Add(error);
             }
         }
@@ -150,14 +150,12 @@ namespace decision_tree
             return tree;
         }
 
-        public string[] calculate(DecisionTree tree, string[][] testingSet, int[] checkedFeatures, out double error)
+        public string[] Classify(DecisionTree tree, string[][] testingSet, int[] checkedFeatures, out double error)
         {
             var inputs = GetInputs(testingSet, checkedFeatures);
-            Console.WriteLine();
             int[] predicted = tree.Decide(inputs);
             string[] result = predicted.Select(z => z.ToString()).ToArray();
             //File.WriteAllLines(@"C:\Users\higin\Desktop\predictions.txt", result);
-
 
             //creating the codebook with labels and converting them to integer representations
             var codebook = new Codification("Output", _labels);
@@ -166,15 +164,26 @@ namespace decision_tree
             error = new ZeroOneLoss(tree.Decide(inputs)).Loss(outputs);
             //Console.WriteLine("Error of: " + error);
 
-            // Moreover, we may decide to convert our tree to a set of rules:
-            rules = tree.ToRules();
-            // And using the codebook, we can inspect the tree reasoning:
-            //string ruleText = rules.ToString(codebook, "Output", System.Globalization.CultureInfo.InvariantCulture);
-            //File.WriteAllText(@"F:\teste\rules.txt", ruleText);
             return result;
         }
 
-        public string[] calculate(DecisionTree tree, string[][] testingSet, int[] checkedFeatures, int labelIndex, out double error)
+        public string[] Classify(double[][] inputs, out double error)
+        {
+            int[] predicted = tree.Decide(inputs);
+            string[] result = predicted.Select(z => z.ToString()).ToArray();
+            //File.WriteAllLines(@"C:\Users\higin\Desktop\predictions.txt", result);
+
+            //creating the codebook with labels and converting them to integer representations
+            var codebook = new Codification("Output", _labels);
+            var outputs = codebook.Translate("Output", _labels);
+
+            error = new ZeroOneLoss(tree.Decide(inputs)).Loss(outputs);
+            //Console.WriteLine("Error of: " + error);
+
+            return result;
+        }
+
+        public string[] train(DecisionTree tree, string[][] testingSet, int[] checkedFeatures, int labelIndex, out double error)
         {
             var inputs = GetInputs(testingSet, checkedFeatures);
 
@@ -198,6 +207,8 @@ namespace decision_tree
             //File.WriteAllText(@"C:\Users\higin\Desktop\log.txt", ruleText);
             return result;
         }
+
+
     }
 
 

@@ -232,8 +232,8 @@ namespace DecisionTreeApp
         {
             List<string> reverted = new List<string>();
             var codes = manager._codebook;
-            var things = codes.Columns[0].Mapping.Keys;
-            for(int i = 0; i < things.Count(); i++)
+            var emotions = codes.Columns[0].Mapping.Keys;
+            for(int i = 0; i < emotions.Count(); i++)
             {
                 reverted.Add(codes.Revert("Output", i));
             }
@@ -264,7 +264,7 @@ namespace DecisionTreeApp
                             testingPath = openFileDialog1.FileName;
                             infoLabel.Text = testingPath + " is loaded";
                             testingSet = manager.CreateDataSet(testingPath);
-                            string[] results = manager.calculate(tree, testingSet, checkedFeatures, out error);
+                            string[] results = manager.Classify(tree, testingSet, checkedFeatures, out error);
                             for(int i = 0; i < results.Count(); i++)
                             {
                                 DataGridViewRow row = (DataGridViewRow)resultsGrid.Rows[0].Clone();

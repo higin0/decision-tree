@@ -44,14 +44,15 @@
             this.label1 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.resultsGrid = new System.Windows.Forms.DataGridView();
+            this.key = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.output = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.testingInfoLabel = new System.Windows.Forms.Label();
             this.errorLabel = new System.Windows.Forms.Label();
             this.selectAll = new System.Windows.Forms.Button();
             this.selectNone = new System.Windows.Forms.Button();
             this.testingGroup = new System.Windows.Forms.GroupBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.key = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.output = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.loadRulesButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.resultsGrid)).BeginInit();
             this.testingGroup.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -123,7 +124,7 @@
             // 
             // featureButton
             // 
-            this.featureButton.Location = new System.Drawing.Point(4, 542);
+            this.featureButton.Location = new System.Drawing.Point(11, 525);
             this.featureButton.Margin = new System.Windows.Forms.Padding(2);
             this.featureButton.Name = "featureButton";
             this.featureButton.Size = new System.Drawing.Size(136, 19);
@@ -134,7 +135,7 @@
             // 
             // labelButton
             // 
-            this.labelButton.Location = new System.Drawing.Point(144, 542);
+            this.labelButton.Location = new System.Drawing.Point(151, 525);
             this.labelButton.Margin = new System.Windows.Forms.Padding(2);
             this.labelButton.Name = "labelButton";
             this.labelButton.Size = new System.Drawing.Size(136, 19);
@@ -145,7 +146,7 @@
             // 
             // unselectFeatureButton
             // 
-            this.unselectFeatureButton.Location = new System.Drawing.Point(4, 566);
+            this.unselectFeatureButton.Location = new System.Drawing.Point(11, 549);
             this.unselectFeatureButton.Margin = new System.Windows.Forms.Padding(2);
             this.unselectFeatureButton.Name = "unselectFeatureButton";
             this.unselectFeatureButton.Size = new System.Drawing.Size(136, 19);
@@ -177,7 +178,7 @@
             // 
             // unselectedLabelButton
             // 
-            this.unselectedLabelButton.Location = new System.Drawing.Point(144, 566);
+            this.unselectedLabelButton.Location = new System.Drawing.Point(151, 549);
             this.unselectedLabelButton.Margin = new System.Windows.Forms.Padding(2);
             this.unselectedLabelButton.Name = "unselectedLabelButton";
             this.unselectedLabelButton.Size = new System.Drawing.Size(136, 19);
@@ -189,10 +190,10 @@
             // 
             // treeButton
             // 
-            this.treeButton.Location = new System.Drawing.Point(4, 589);
+            this.treeButton.Location = new System.Drawing.Point(11, 572);
             this.treeButton.Margin = new System.Windows.Forms.Padding(2);
             this.treeButton.Name = "treeButton";
-            this.treeButton.Size = new System.Drawing.Size(276, 19);
+            this.treeButton.Size = new System.Drawing.Size(276, 26);
             this.treeButton.TabIndex = 10;
             this.treeButton.Text = "Generate Tree";
             this.treeButton.UseVisualStyleBackColor = true;
@@ -201,7 +202,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 610);
+            this.label1.Location = new System.Drawing.Point(204, 36);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(45, 13);
@@ -233,6 +234,19 @@
             this.resultsGrid.Size = new System.Drawing.Size(324, 497);
             this.resultsGrid.TabIndex = 13;
             // 
+            // key
+            // 
+            this.key.HeaderText = "ID";
+            this.key.Name = "key";
+            this.key.ReadOnly = true;
+            // 
+            // output
+            // 
+            this.output.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.output.HeaderText = "Output";
+            this.output.Name = "output";
+            this.output.ReadOnly = true;
+            // 
             // testingInfoLabel
             // 
             this.testingInfoLabel.AutoSize = true;
@@ -259,7 +273,7 @@
             // 
             // selectAll
             // 
-            this.selectAll.Location = new System.Drawing.Point(9, 484);
+            this.selectAll.Location = new System.Drawing.Point(14, 484);
             this.selectAll.Name = "selectAll";
             this.selectAll.Size = new System.Drawing.Size(58, 37);
             this.selectAll.TabIndex = 16;
@@ -285,12 +299,13 @@
             this.testingGroup.Controls.Add(this.errorLabel);
             this.testingGroup.Location = new System.Drawing.Point(304, 0);
             this.testingGroup.Name = "testingGroup";
-            this.testingGroup.Size = new System.Drawing.Size(329, 632);
+            this.testingGroup.Size = new System.Drawing.Size(329, 642);
             this.testingGroup.TabIndex = 18;
             this.testingGroup.TabStop = false;
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.loadRulesButton);
             this.groupBox1.Controls.Add(this.labelLabel);
             this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.selectNone);
@@ -309,22 +324,19 @@
             this.groupBox1.Controls.Add(this.featureButton);
             this.groupBox1.Location = new System.Drawing.Point(8, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(290, 632);
+            this.groupBox1.Size = new System.Drawing.Size(290, 642);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
             // 
-            // key
+            // loadRulesButton
             // 
-            this.key.HeaderText = "ID";
-            this.key.Name = "key";
-            this.key.ReadOnly = true;
-            // 
-            // output
-            // 
-            this.output.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.output.HeaderText = "Output";
-            this.output.Name = "output";
-            this.output.ReadOnly = true;
+            this.loadRulesButton.Enabled = false;
+            this.loadRulesButton.Location = new System.Drawing.Point(11, 602);
+            this.loadRulesButton.Name = "loadRulesButton";
+            this.loadRulesButton.Size = new System.Drawing.Size(276, 24);
+            this.loadRulesButton.TabIndex = 18;
+            this.loadRulesButton.Text = "Load Rule File";
+            this.loadRulesButton.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -372,5 +384,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.DataGridViewTextBoxColumn key;
         private System.Windows.Forms.DataGridViewTextBoxColumn output;
+        private System.Windows.Forms.Button loadRulesButton;
     }
 }
